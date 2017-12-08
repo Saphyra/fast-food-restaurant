@@ -86,7 +86,7 @@ public class Desk implements Runnable {
     }
 
     private void sendToTableService(ClientGroup group) throws InterruptedException {
-        Logger.logToErr(group + " has got his food and searching for table.");
         tableQueue.put(group);
+        Logger.logToErr(group + " has got his food and searching for table.");
     }
 }

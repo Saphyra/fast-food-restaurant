@@ -32,8 +32,8 @@ public class ClientGenerator implements Runnable {
     }
 
     private void createClientGroup() throws InterruptedException {
-        Logger.logToErr("New clients!");
         ClientGroup group = ClientGroup.clientGroupFactory(cassaQueue);
         deskQueue.put(group);
+        Logger.logToErr("New clients!");
     }
 }
