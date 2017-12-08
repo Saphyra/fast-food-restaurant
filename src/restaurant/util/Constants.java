@@ -23,7 +23,7 @@ public class Constants {
     public static final int KETCHUP_COOK_TIME = 1000;
     public static final int MUSTARD_COOK_TIME = 1000;
 
-    public static final int TABLE_COUNT = 9;
+    public static final int TABLE_COUNT = 3;
     public static final int MAX_TABLE_SIZE = MAX_CLIENT_GROUP_SIZE;
 
     public static final int MIN_MEAL_EATING_TIME = 10000;
