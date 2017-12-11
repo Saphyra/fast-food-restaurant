@@ -4,6 +4,7 @@ import java.util.concurrent.BlockingQueue;
 
 import restaurant.meals.MainCourse;
 import restaurant.util.Constants;
+import restaurant.util.Logger;
 import restaurant.util.Random;
 
 public class Chef implements Runnable {
@@ -19,6 +20,9 @@ public class Chef implements Runnable {
     public void run() {
         while (true) {
             try {
+                if (mealQueue.size() > 18) {
+                    Logger.logToConsole("MealQueue is overloaded: " + mealQueue.size());
+                }
                 MainCourse meal = mealQueue.take();
                 cookMeal(meal);
 
@@ -31,6 +35,9 @@ public class Chef implements Runnable {
     private void cookMeal(MainCourse meal) throws InterruptedException {
         Thread.sleep((long) (meal.getCookTime() * Random.randDouble(MIN_MULTIPLICATOR, MAX_MULTIPLICATOR)));
         addingExtras(meal);
+
+        Logger.logToConsole(meal.getClient().toString() + "'s meal: " + meal.toString() + " is cooked.");
+
         meal.setCooked(true);
     }
 

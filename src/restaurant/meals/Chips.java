@@ -16,4 +16,8 @@ public class Chips extends MainCourse {
         client.setMoral(client.getMoral() * CHIPS_MORAL_INCREMENT);
     }
 
+    @Override
+    protected String getTypeName() {
+        return "Chips";
+    }
 }

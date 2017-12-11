@@ -22,6 +22,11 @@ public class Logger implements Runnable {
         while (true) {
             LogMessage message;
             try {
+                if (Random.randInt(1, 100) < 10) {
+                    System.out.println("Log queue size: " + queue.size());
+                    Thread.sleep(10);
+                }
+
                 message = queue.take();
 
                 switch (message.getMode()) {
@@ -56,5 +61,9 @@ public class Logger implements Runnable {
         public String getMessage() {
             return message;
         }
+    }
+
+    public static boolean isQueueEmpty() {
+        return queue.size() == 0;
     }
 }

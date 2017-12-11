@@ -49,18 +49,13 @@ public class TableService implements Runnable {
 
     private void searchEmptyTable(ClientGroup group) {
         int clientNum = group.getClientNum();
-        boolean found = false;
         for (Table table : tables) {
             if (isTableSuitable(clientNum, table)) {
                 reserveTable(group, table);
 
                 Logger.logToErr(group + " has found a table! - Table: " + table);
-                found = true;
                 break;
             }
-        }
-        if (!found) {
-            Logger.logToConsole(group + " is waiting for table.");
         }
     }
 

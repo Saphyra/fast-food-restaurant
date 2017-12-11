@@ -10,8 +10,8 @@ import restaurant.util.Random;
 
 //Groupping Clients
 public class ClientGroup implements Runnable {
-    private static int clientCounter = 0;
-    private static int clientGroupCounter = 0;
+    private static int clientCount = 0;
+    private static int clientGroupCount = 0;
 
     private final Vector<Client> groupMembers = new Vector<>();
 
@@ -32,7 +32,7 @@ public class ClientGroup implements Runnable {
     public static ClientGroup clientGroupFactory(BlockingQueue<ClientGroup> cassaQueue) {
 
         int clientNum = Random.randInt(Constants.MIN_CLIENT_GROUP_SIZE, Constants.MAX_CLIENT_GROUP_SIZE);
-        String groupid = "ClientGroup" + ++clientGroupCounter;
+        String groupid = "ClientGroup" + ++clientGroupCount;
         Vector<Client> groupMembers = createClients(clientNum, groupid);
 
         return new ClientGroup(groupMembers, groupid, cassaQueue);
@@ -42,8 +42,8 @@ public class ClientGroup implements Runnable {
     private static Vector<Client> createClients(int clientNum, String groupid) {
         Vector<Client> groupMembers = new Vector<>();
         for (int x = 0; x < clientNum; x++) {
-            clientCounter++;
-            groupMembers.add(new Client(clientCounter, groupid));
+            clientCount++;
+            groupMembers.add(new Client(clientCount, groupid));
         }
         return groupMembers;
     }
@@ -97,7 +97,7 @@ public class ClientGroup implements Runnable {
     }
 
     public static int getClientCount() {
-        return clientCounter;
+        return clientCount;
     }
 
     public int getClientNum() {

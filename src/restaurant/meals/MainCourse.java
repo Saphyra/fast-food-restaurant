@@ -101,4 +101,23 @@ public abstract class MainCourse implements Eatable, Cookable {
     public Client getClient() {
         return client;
     }
+
+    protected abstract String getTypeName();
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("MainCourse: " + getTypeName());
+
+        if (withKetchup) {
+            builder.append(" with ketchup");
+        }
+        if (withKetchup && withMustard) {
+            builder.append(" and ");
+        }
+        if (withMustard) {
+            builder.append(" with mustard");
+        }
+
+        return builder.toString();
+    }
 }

@@ -16,4 +16,8 @@ public class HotDog extends MainCourse {
         client.setMoral(client.getMoral() + HOT_DOG_MORAL_INCREMENT);
     }
 
+    @Override
+    protected String getTypeName() {
+        return "Hot-Dog";
+    }
 }
