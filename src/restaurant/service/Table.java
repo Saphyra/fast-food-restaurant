@@ -42,6 +42,6 @@ public class Table {
 
     @Override
     public String toString() {
-        return name + "(Size: " + tableSize + ")";
+        return name + " (Size: " + tableSize + ")";
     }
 }

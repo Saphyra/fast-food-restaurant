@@ -23,9 +23,11 @@ public class Entrance {
 
     public static void main(String[] args) {
         BlockingQueue<ClientGroup> deskQueue = new ArrayBlockingQueue<>(5);
-        BlockingQueue<MainCourse> mealQueue = new ArrayBlockingQueue<>(100);
+        BlockingQueue<MainCourse> mealQueue = new ArrayBlockingQueue<>(20);
         BlockingQueue<ClientGroup> tableQueue = new ArrayBlockingQueue<>(5);
         BlockingQueue<ClientGroup> cassaQueue = new ArrayBlockingQueue<>(5);
+
+        startLogger();
 
         openDoor(deskQueue, cassaQueue);
         createDesk(deskQueue, mealQueue, tableQueue);
@@ -35,6 +37,14 @@ public class Entrance {
         createTableService(tableQueue, tables);
 
         createCassa(cassaQueue);
+    }
+
+    // Starting Logger
+    private static void startLogger() {
+        Thread loggerThread = new Thread(new Logger());
+        loggerThread.setName("Logger");
+        loggerThread.start();
+        Logger.logToConsole("Logger started");
     }
 
     // Creating ClientGenerator

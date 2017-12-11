@@ -2,7 +2,7 @@ package restaurant.util;
 
 //Int constants in one place for better settings
 public class Constants {
-    public static final int CLIENT_NUM = 1000;
+    public static final int CLIENT_NUM = 200;
 
     public static final int MIN_CLIENT_GROUP_SIZE = 1;
     public static final int MAX_CLIENT_GROUP_SIZE = 10;
@@ -23,7 +23,7 @@ public class Constants {
     public static final int KETCHUP_COOK_TIME = 1000;
     public static final int MUSTARD_COOK_TIME = 1000;
 
-    public static final int TABLE_COUNT = 3;
+    public static final int TABLE_COUNT = 9;
     public static final int MAX_TABLE_SIZE = MAX_CLIENT_GROUP_SIZE;
 
     public static final int MIN_MEAL_EATING_TIME = 10000;
