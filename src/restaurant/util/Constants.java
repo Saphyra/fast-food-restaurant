@@ -17,9 +17,9 @@ public class Constants {
     public static final int MIN_ORDER_TIME = 1000;
     public static final int MAX_ORDER_TIME = 3000;
 
-    public static final int CHEF_COUNT = 6;
-    public static final int CHIPS_COOKING_TIME = 666;
-    public static final int HOT_DOG_COOKING_TIME = 3333;
+    public static final int CHEF_COUNT = 5;
+    public static final int CHIPS_COOKING_TIME = 1000;
+    public static final int HOT_DOG_COOKING_TIME = 3500;
     public static final int KETCHUP_COOK_TIME = 1000;
     public static final int MUSTARD_COOK_TIME = 1000;
 

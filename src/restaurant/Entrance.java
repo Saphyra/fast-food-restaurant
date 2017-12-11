@@ -20,6 +20,7 @@ import restaurant.util.TableSortingComparator;
 
 //Creating components
 public class Entrance {
+    public static final long START_TIME = System.currentTimeMillis();
 
     public static void main(String[] args) {
         BlockingQueue<ClientGroup> deskQueue = new ArrayBlockingQueue<>(5);

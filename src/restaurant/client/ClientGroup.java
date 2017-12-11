@@ -89,7 +89,7 @@ public class ClientGroup implements Runnable {
 
     @Override
     public String toString() {
-        return id + "[" + clientNum + "]";
+        return id + " [" + clientNum + "]";
     }
 
     public Vector<Client> getGroupMembers() {
@@ -98,6 +98,10 @@ public class ClientGroup implements Runnable {
 
     public static int getClientCount() {
         return clientCount;
+    }
+
+    public static int getClientGroupCount() {
+        return clientGroupCount;
     }
 
     public int getClientNum() {

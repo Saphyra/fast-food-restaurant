@@ -11,6 +11,7 @@ public class Chef implements Runnable {
     private static final double MAX_MULTIPLICATOR = 1.5;
     private static final double MIN_MULTIPLICATOR = 0.5;
     private BlockingQueue<MainCourse> mealQueue;
+    private static int mealNum = 0;
 
     public Chef(BlockingQueue<MainCourse> mealQueue) {
         this.mealQueue = mealQueue;
@@ -37,7 +38,7 @@ public class Chef implements Runnable {
         addingExtras(meal);
 
         Logger.logToConsole(meal.getClient().toString() + "'s meal: " + meal.toString() + " is cooked.");
-
+        incMealNum();
         meal.setCooked(true);
     }
 
@@ -48,5 +49,13 @@ public class Chef implements Runnable {
         if (meal.isWithKetchup()) {
             Thread.sleep((long) (Constants.MUSTARD_COOK_TIME * Random.randDouble(MIN_MULTIPLICATOR, MAX_MULTIPLICATOR)));
         }
+    }
+
+    public static int getMealNum() {
+        return mealNum;
+    }
+
+    private synchronized static void incMealNum() {
+        mealNum++;
     }
 }

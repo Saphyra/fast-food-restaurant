@@ -37,6 +37,7 @@ public class Client implements Runnable {
 
     // Eating food
     private void eating() {
+        int counter = 0;
         for (MainCourse meal : mealList) {
             try {
                 long sleepTime = Random.randLong(Constants.MIN_MEAL_EATING_TIME, Constants.MAX_MEAL_EATING_TIME);
@@ -45,6 +46,7 @@ public class Client implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            Logger.logToConsole(toString() + " has eaten one of his meals. - " + ++counter + "/" + mealList.size());
         }
         setReadyWidthFood(true);
     }

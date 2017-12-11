@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import restaurant.client.ClientGroup;
 import restaurant.util.Constants;
 import restaurant.util.Logger;
+import restaurant.util.Logout;
 import restaurant.util.Random;
 
 public class Cassa implements Runnable {
@@ -35,7 +36,7 @@ public class Cassa implements Runnable {
             while (!Logger.isQueueEmpty()) {
                 Thread.sleep(1000);
             }
-            System.exit(0);
+            Logout.exit();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
