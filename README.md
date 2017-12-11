@@ -64,6 +64,7 @@ Osztályok:
     - Elindítja a ClientGroupot
 - restaurant.service.Cassa
     - Kiveszi a ClientGroup-okat a cassaQueue-ból, és megadott tartományon belül véletlenszerű idő alatt "kifizetteti a számlát"
+    - Elindítja a leállítási folyamatot, ha az összes Client elhagyta az üzletet
 - restaurant.meals
     - Az egyes ételek jellemzői
 - restaurant.util.Constants
@@ -77,3 +78,7 @@ Osztályok:
 - restaurant.util.TableSortingComparator
     - TableService használja a Table-k férőhely szerinti sorba rendezéséhez.
     - Cél: A ClientGroupok méretének leginkább megfelelő asztal lefoglalása
+- restaurant.util.Logout
+    - Bezárja az alkalmazást
+    - Kilogolja a statisztikát
+    
