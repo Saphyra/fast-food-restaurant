@@ -3,10 +3,10 @@ package restaurant.service;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 
+import restaurant.Entrance;
 import restaurant.client.Client;
 import restaurant.client.ClientGroup;
 import restaurant.meals.MainCourse;
-import restaurant.util.Constants;
 import restaurant.util.Logger;
 import restaurant.util.Random;
 
@@ -56,9 +56,12 @@ public class Desk implements Runnable {
     // Deskman asks Chefs for making the meal.
     private void giveRequest(Client client) throws InterruptedException {
         Vector<MainCourse> meals = client.getMealList();
+        long minOrderTime = Long.valueOf((String) Entrance.CONFIG.get("desk.minordertime"));
+        long maxOrderTime = Long.valueOf((String) Entrance.CONFIG.get("desk.maxordertime"));
+
         for (MainCourse meal : meals) {
 
-            long sleepTime = Random.randLong(Constants.MIN_ORDER_TIME, Constants.MAX_ORDER_TIME);
+            long sleepTime = Random.randLong(minOrderTime, maxOrderTime);
             Thread.sleep(sleepTime);
 
             mealQueue.put(meal);

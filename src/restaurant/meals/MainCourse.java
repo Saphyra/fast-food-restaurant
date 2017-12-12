@@ -2,14 +2,14 @@ package restaurant.meals;
 
 import java.util.Vector;
 
+import restaurant.Entrance;
 import restaurant.client.Client;
-import restaurant.util.Constants;
 import restaurant.util.Random;
 
 //Abstract class for Main Courses' data
 public abstract class MainCourse implements Eatable, Cookable {
 
-    private static final int MUSTARD_MORAL_INCREMENT = 1;
+    private static final int MUSTARD_MORAL_INCREMENT = Integer.valueOf((String) Entrance.EXTRAS.get("mustard.moraladdition"));
     public static final int HOT_DOG = 1;
     public static final int CHIPS = 2;
 
@@ -23,7 +23,11 @@ public abstract class MainCourse implements Eatable, Cookable {
     // Creating MealList for a Client
     public static Vector<MainCourse> mealListFactory(Client client) {
         Vector<MainCourse> mealList = new Vector<>();
-        int mealNum = Random.randInt(Constants.MIN_MEAL_COUNT, Constants.MAX_MEAL_COUNT);
+
+        int minMealCount = Integer.valueOf((String) Entrance.CONFIG.get("client.minmealcount"));
+        int maxMealCount = Integer.valueOf((String) Entrance.CONFIG.get("client.maxmealcount"));
+
+        int mealNum = Random.randInt(minMealCount, maxMealCount);
         for (int x = 0; x < mealNum; x++) {
             mealList.add(mainCourseFactory(client));
         }

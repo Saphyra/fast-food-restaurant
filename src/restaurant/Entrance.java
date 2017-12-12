@@ -1,8 +1,10 @@
 package restaurant;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -14,15 +16,19 @@ import restaurant.service.ClientGenerator;
 import restaurant.service.Desk;
 import restaurant.service.Table;
 import restaurant.service.TableService;
-import restaurant.util.Constants;
 import restaurant.util.Logger;
 import restaurant.util.TableSortingComparator;
 
 //Creating components
 public class Entrance {
     public static final long START_TIME = System.currentTimeMillis();
+    public static final Properties CONFIG = new Properties();
+    public static final Properties EXTRAS = new Properties();
+    public static final Properties MAINCOURSES = new Properties();
 
     public static void main(String[] args) {
+        loadProperties();
+
         BlockingQueue<ClientGroup> deskQueue = new ArrayBlockingQueue<>(5);
         BlockingQueue<MainCourse> mealQueue = new ArrayBlockingQueue<>(20);
         BlockingQueue<ClientGroup> tableQueue = new ArrayBlockingQueue<>(5);
@@ -38,6 +44,16 @@ public class Entrance {
         createTableService(tableQueue, tables);
 
         createCassa(cassaQueue);
+    }
+
+    private static void loadProperties() {
+        try {
+            CONFIG.load(Entrance.class.getResourceAsStream("../config.properties"));
+            EXTRAS.load(Entrance.class.getResourceAsStream("../extras.properties"));
+            MAINCOURSES.load(Entrance.class.getResourceAsStream("../maincourses.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Starting Logger
@@ -58,7 +74,9 @@ public class Entrance {
 
     // Creating Desks
     private static void createDesk(BlockingQueue<ClientGroup> deskQueue, BlockingQueue<MainCourse> mealQueue, BlockingQueue<ClientGroup> tableQueue) {
-        for (int x = 1; x <= Constants.WAITER_COUNT; x++) {
+        int waiterCount = Integer.valueOf((String) CONFIG.get("desk.waitercount"));
+
+        for (int x = 1; x <= waiterCount; x++) {
             Logger.logToConsole("Desk " + x + " created.");
             Thread thread = new Thread(new Desk(deskQueue, mealQueue, tableQueue));
             thread.setName("Desk " + x);
@@ -68,7 +86,9 @@ public class Entrance {
 
     // Creating Chefs
     private static void createChefs(BlockingQueue<MainCourse> mealQueue) {
-        for (int x = 1; x <= Constants.CHEF_COUNT; x++) {
+        int chefCount = Integer.valueOf((String) CONFIG.get("chef.count"));
+
+        for (int x = 1; x <= chefCount; x++) {
             Logger.logToConsole("Chef " + x + " created.");
             Thread thread = new Thread(new Chef(mealQueue));
             thread.setName("Chef " + x);
@@ -78,9 +98,12 @@ public class Entrance {
 
     // Creating Tables
     private static List<Table> createTables() {
-        List<Table> tables = new ArrayList<>(Constants.TABLE_COUNT + 1);
-        tables.add(new Table(Constants.MAX_CLIENT_GROUP_SIZE));
-        for (int x = 0; x < Constants.TABLE_COUNT; x++) {
+        int tableCount = Integer.valueOf((String) CONFIG.get("table.count"));
+        int maxClientGroupSize = Integer.valueOf((String) CONFIG.get("clientgroup.maxsize"));
+
+        List<Table> tables = new ArrayList<>(tableCount + 1);
+        tables.add(new Table(maxClientGroupSize));
+        for (int x = 0; x < tableCount; x++) {
             Table table = Table.randomTableFactory();
             tables.add(table);
         }

@@ -3,8 +3,8 @@ package restaurant.client;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 
+import restaurant.Entrance;
 import restaurant.service.Table;
-import restaurant.util.Constants;
 import restaurant.util.Logger;
 import restaurant.util.Random;
 
@@ -30,8 +30,10 @@ public class ClientGroup implements Runnable {
 
     // Creating new group of Clients
     public static ClientGroup clientGroupFactory(BlockingQueue<ClientGroup> cassaQueue) {
+        int minClientGroupSize = Integer.valueOf((String) Entrance.CONFIG.get("clientgroup.minsize"));
+        int maxClientGroupSize = Integer.valueOf((String) Entrance.CONFIG.get("clientgroup.maxsize"));
 
-        int clientNum = Random.randInt(Constants.MIN_CLIENT_GROUP_SIZE, Constants.MAX_CLIENT_GROUP_SIZE);
+        int clientNum = Random.randInt(minClientGroupSize, maxClientGroupSize);
         String groupid = "ClientGroup" + ++clientGroupCount;
         Vector<Client> groupMembers = createClients(clientNum, groupid);
 

@@ -2,8 +2,8 @@ package restaurant.service;
 
 import java.util.concurrent.BlockingQueue;
 
+import restaurant.Entrance;
 import restaurant.client.ClientGroup;
-import restaurant.util.Constants;
 import restaurant.util.Logger;
 import restaurant.util.Logout;
 import restaurant.util.Random;
@@ -24,7 +24,11 @@ public class Cassa implements Runnable {
 
                 ClientGroup group = cassaQueue.take();
                 clientNum += group.getClientNum();
-                long sleepTime = Random.randLong(Constants.MIN_PAY_TIME, Constants.MAX_PAY_TIME);
+
+                long minPayTime = Long.valueOf((String) Entrance.CONFIG.get("cassa.minpaytime"));
+                long maxPayTime = Long.valueOf((String) Entrance.CONFIG.get("cassa.maxpaytime"));
+
+                long sleepTime = Random.randLong(minPayTime, maxPayTime);
                 Thread.sleep(sleepTime);
                 Logger.logToErr(group + " has paid and left the restaurant.");
 

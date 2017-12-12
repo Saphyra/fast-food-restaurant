@@ -3,8 +3,8 @@ package restaurant.client;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import restaurant.Entrance;
 import restaurant.meals.MainCourse;
-import restaurant.util.Constants;
 import restaurant.util.Logger;
 import restaurant.util.Random;
 
@@ -38,9 +38,13 @@ public class Client implements Runnable {
     // Eating food
     private void eating() {
         int counter = 0;
+
+        int minMealEatingTime = Integer.valueOf((String) Entrance.CONFIG.get("meal.mineatingtime"));
+        int maxMealEatingTime = Integer.valueOf((String) Entrance.CONFIG.get("meal.maxeatingtime"));
+
         for (MainCourse meal : mealList) {
             try {
-                long sleepTime = Random.randLong(Constants.MIN_MEAL_EATING_TIME, Constants.MAX_MEAL_EATING_TIME);
+                long sleepTime = Random.randLong(minMealEatingTime, maxMealEatingTime);
                 Thread.sleep(sleepTime);
                 meal.eat();
             } catch (InterruptedException e) {

@@ -2,7 +2,7 @@ package restaurant.service;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import restaurant.util.Constants;
+import restaurant.Entrance;
 import restaurant.util.Logger;
 import restaurant.util.Random;
 
@@ -20,7 +20,10 @@ public class Table {
     }
 
     public static Table randomTableFactory() {
-        int tableSize = Random.randInt(Constants.MIN_CLIENT_GROUP_SIZE, Constants.MAX_TABLE_SIZE);
+        long minClientGroupSize = Long.valueOf((String) Entrance.CONFIG.get("clientgroup.minsize"));
+        long maxClientGroupSize = Long.valueOf((String) Entrance.CONFIG.get("clientgroup.maxsize"));
+
+        int tableSize = Random.randInt(minClientGroupSize, maxClientGroupSize);
         return new Table(tableSize);
     }
 

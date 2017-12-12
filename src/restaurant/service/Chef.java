@@ -2,8 +2,8 @@ package restaurant.service;
 
 import java.util.concurrent.BlockingQueue;
 
+import restaurant.Entrance;
 import restaurant.meals.MainCourse;
-import restaurant.util.Constants;
 import restaurant.util.Logger;
 import restaurant.util.Random;
 
@@ -44,10 +44,12 @@ public class Chef implements Runnable {
 
     private void addingExtras(MainCourse meal) throws InterruptedException {
         if (meal.isWithKetchup()) {
-            Thread.sleep((long) (Constants.KETCHUP_COOK_TIME * Random.randDouble(MIN_MULTIPLICATOR, MAX_MULTIPLICATOR)));
+            long cookTime = Long.valueOf((String) Entrance.EXTRAS.get("ketchup.cooktime"));
+            Thread.sleep((long) (cookTime * Random.randDouble(MIN_MULTIPLICATOR, MAX_MULTIPLICATOR)));
         }
         if (meal.isWithKetchup()) {
-            Thread.sleep((long) (Constants.MUSTARD_COOK_TIME * Random.randDouble(MIN_MULTIPLICATOR, MAX_MULTIPLICATOR)));
+            long cookTime = Long.valueOf((String) Entrance.EXTRAS.get("mustard.cooktime"));
+            Thread.sleep((long) (cookTime * Random.randDouble(MIN_MULTIPLICATOR, MAX_MULTIPLICATOR)));
         }
     }
 

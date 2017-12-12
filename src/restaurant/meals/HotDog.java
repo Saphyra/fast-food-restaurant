@@ -1,19 +1,20 @@
 package restaurant.meals;
 
+import restaurant.Entrance;
 import restaurant.client.Client;
-import restaurant.util.Constants;
 
 public class HotDog extends MainCourse {
 
-    private static final int HOT_DOG_MORAL_INCREMENT = 2;
+    private static final long cookTime = Long.valueOf((String) Entrance.MAINCOURSES.get("hotdog.cooktime"));
 
     public HotDog(Client client) {
-        super(client, Constants.HOT_DOG_COOKING_TIME);
+        super(client, cookTime);
     }
 
     @Override
     protected void eatMainCourse() {
-        client.setMoral(client.getMoral() + HOT_DOG_MORAL_INCREMENT);
+        double moralIncrement = Double.valueOf((String) Entrance.MAINCOURSES.get("hotdog.moraladdition"));
+        client.setMoral(client.getMoral() + moralIncrement);
     }
 
     @Override

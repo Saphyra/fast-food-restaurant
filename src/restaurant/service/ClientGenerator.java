@@ -2,8 +2,8 @@ package restaurant.service;
 
 import java.util.concurrent.BlockingQueue;
 
+import restaurant.Entrance;
 import restaurant.client.ClientGroup;
-import restaurant.util.Constants;
 import restaurant.util.Logger;
 import restaurant.util.Random;
 
@@ -19,10 +19,14 @@ public class ClientGenerator implements Runnable {
     // Creating new Client Groups til the limit reaches
     @Override
     public void run() {
-        while (ClientGroup.getClientCount() < Constants.CLIENT_NUM) {
+        int clientNum = Integer.valueOf((String) Entrance.CONFIG.get("clientgenerator.clientnum"));
+        long minDelay = Long.valueOf((String) Entrance.CONFIG.get("clientgenerator.mindelay"));
+        long maxDelay = Long.valueOf((String) Entrance.CONFIG.get("clientgenerator.maxdelay"));
+
+        while (ClientGroup.getClientCount() < clientNum) {
             try {
                 createClientGroup();
-                long sleepTime = Random.randLong(Constants.MIN_CLIENT_GROUP_ARRIVAL, Constants.MAX_CLIENT_GROUP_ARRIVAL);
+                long sleepTime = Random.randLong(minDelay, maxDelay);
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
