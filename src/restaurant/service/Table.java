@@ -2,11 +2,13 @@ package restaurant.service;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import restaurant.Entrance;
 import restaurant.util.Logger;
+import restaurant.util.PropLoader;
 import restaurant.util.Random;
 
 public class Table {
+    private static final String MAX_CLIENT_GROUP_SIZE = "clientgroup.maxsize";
+    private static final String MIN_CLIENT_GROUP_SIZE = "clientgroup.minsize";
     private static int tableCounter = 0;
     private volatile AtomicBoolean free = new AtomicBoolean(true);
     private int tableSize;
@@ -20,8 +22,8 @@ public class Table {
     }
 
     public static Table randomTableFactory() {
-        long minClientGroupSize = Long.valueOf((String) Entrance.CONFIG.get("clientgroup.minsize"));
-        long maxClientGroupSize = Long.valueOf((String) Entrance.CONFIG.get("clientgroup.maxsize"));
+        long minClientGroupSize = PropLoader.getLongProperty(MIN_CLIENT_GROUP_SIZE);
+        long maxClientGroupSize = PropLoader.getLongProperty(MAX_CLIENT_GROUP_SIZE);
 
         int tableSize = Random.randInt(minClientGroupSize, maxClientGroupSize);
         return new Table(tableSize);

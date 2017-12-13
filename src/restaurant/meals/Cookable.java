@@ -1,5 +1,9 @@
 package restaurant.meals;
 
 public interface Cookable {
-    long getCookTime();
+    void cook();
+
+    boolean isCooked();
+
+    void setCooked(boolean cooked);
 }

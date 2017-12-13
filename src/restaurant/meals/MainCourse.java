@@ -1,127 +1,59 @@
 package restaurant.meals;
 
-import java.util.Vector;
+import java.util.Set;
 
-import restaurant.Entrance;
-import restaurant.client.Client;
+import restaurant.util.PropLoader;
 import restaurant.util.Random;
 
-//Abstract class for Main Courses' data
-public abstract class MainCourse implements Eatable, Cookable {
+public class MainCourse implements Eatable, Cookable {
+    private final Food food;
 
-    private static final int MUSTARD_MORAL_INCREMENT = Integer.valueOf((String) Entrance.EXTRAS.get("mustard.moraladdition"));
-    public static final int HOT_DOG = 1;
-    public static final int CHIPS = 2;
-
-    protected boolean cooked = false;
-    protected final Client client;
-    protected final long cookTime;
-
-    protected final boolean withKetchup;
-    protected final boolean withMustard;
-
-    // Creating MealList for a Client
-    public static Vector<MainCourse> mealListFactory(Client client) {
-        Vector<MainCourse> mealList = new Vector<>();
-
-        int minMealCount = Integer.valueOf((String) Entrance.CONFIG.get("client.minmealcount"));
-        int maxMealCount = Integer.valueOf((String) Entrance.CONFIG.get("client.maxmealcount"));
-
-        int mealNum = Random.randInt(minMealCount, maxMealCount);
-        for (int x = 0; x < mealNum; x++) {
-            mealList.add(mainCourseFactory(client));
-        }
-        return mealList;
+    private MainCourse(Food food) {
+        this.food = food;
     }
 
-    // Creating one MainCourse
-    private static MainCourse mainCourseFactory(Client client) {
-        MainCourse mainCourse = null;
-        switch (Random.randInt(1, 2)) {
-        case HOT_DOG:
-            mainCourse = new HotDog(client);
-            break;
-        case CHIPS:
-            mainCourse = new Chips(client);
-            break;
-        }
-        return mainCourse;
+    public static MainCourse createRandomMainCourse() {
+        Set<String> mainCourses = PropLoader.getMainCourseTypes();
+        Object[] mainCourseArr = mainCourses.toArray();
+        String type = (String) mainCourseArr[Random.randInt(0, mainCourseArr.length - 1)];
+        Food food = new Food(PropLoader.getMainCourse(type));
+
+        return new MainCourse(food);
     }
 
-    protected MainCourse(Client client, long cookTime) {
-        withKetchup = Random.randBoolean();
-        withMustard = Random.randBoolean();
-        this.client = client;
-        this.cookTime = cookTime;
+    @Override
+    public void cook() {
+        food.cook();
+
     }
 
-    // Eating the Meal
     @Override
     public void eat() {
-        if (withMustard) {
-            mustardEffect();
-        } else {
-            eatMainCourse();
-            if (withKetchup) {
-                ketchupEffect();
-            }
-        }
+        food.eat();
     }
 
-    // Eating Mail Course
-    protected abstract void eatMainCourse();
-
-    // Eating Ketchup
-    protected void ketchupEffect() {
-        eatMainCourse();
+    @Override
+    public boolean isEaten() {
+        return food.isEaten();
     }
 
-    // Eating Mustard
-    protected void mustardEffect() {
-        client.setMoral(client.getMoral() + MUSTARD_MORAL_INCREMENT);
-    }
-
+    @Override
     public boolean isCooked() {
-        return cooked;
-    }
-
-    public void setCooked(boolean cooked) {
-        this.cooked = cooked;
-    }
-
-    public boolean isWithKetchup() {
-        return withKetchup;
-    }
-
-    public boolean isWithMustard() {
-        return withMustard;
+        return food.isCooked();
     }
 
     @Override
-    public long getCookTime() {
-        return cookTime;
+    public void setEaten(boolean eaten) {
+        food.setEaten(eaten);
     }
 
-    public Client getClient() {
-        return client;
+    @Override
+    public void setCooked(boolean cooked) {
+        food.setCooked(cooked);
     }
-
-    protected abstract String getTypeName();
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("MainCourse: " + getTypeName());
-
-        if (withKetchup) {
-            builder.append(" with ketchup");
-        }
-        if (withKetchup && withMustard) {
-            builder.append(" and ");
-        }
-        if (withMustard) {
-            builder.append(" with mustard");
-        }
-
-        return builder.toString();
+        return food.toString();
     }
 }

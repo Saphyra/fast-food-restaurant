@@ -16,7 +16,7 @@ public class Logout {
         int mealNum = Chef.getMealNum();
 
         System.out.println(clientNum + " clients in " + clientGroupNum + " groups");
-
+        System.out.println("Average " + clientNum / clientGroupNum + " client/group");
         System.out.println("Average service time: " + clientNum / runTime * 100 + " clients/100 second");
         System.out.println("Average service time: " + clientGroupNum / runTime * 100 + " client groups/100 second");
         System.out.println("Main courses eaten: " + mealNum);

@@ -2,13 +2,15 @@ package restaurant.service;
 
 import java.util.concurrent.BlockingQueue;
 
-import restaurant.Entrance;
 import restaurant.client.ClientGroup;
 import restaurant.util.Logger;
 import restaurant.util.Logout;
+import restaurant.util.PropLoader;
 import restaurant.util.Random;
 
 public class Cassa implements Runnable {
+    private static final String MAX_PAY_TIME = "cassa.maxpaytime";
+    private static final String MIN_PAY_TIME = "cassa.minpaytime";
     private static int clientNum = 0;
     private BlockingQueue<ClientGroup> cassaQueue;
 
@@ -25,8 +27,8 @@ public class Cassa implements Runnable {
                 ClientGroup group = cassaQueue.take();
                 clientNum += group.getClientNum();
 
-                long minPayTime = Long.valueOf((String) Entrance.CONFIG.get("cassa.minpaytime"));
-                long maxPayTime = Long.valueOf((String) Entrance.CONFIG.get("cassa.maxpaytime"));
+                long minPayTime = PropLoader.getLongProperty(MIN_PAY_TIME);
+                long maxPayTime = PropLoader.getLongProperty(MAX_PAY_TIME);
 
                 long sleepTime = Random.randLong(minPayTime, maxPayTime);
                 Thread.sleep(sleepTime);

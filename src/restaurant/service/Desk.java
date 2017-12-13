@@ -1,22 +1,26 @@
 package restaurant.service;
 
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 
-import restaurant.Entrance;
 import restaurant.client.Client;
 import restaurant.client.ClientGroup;
-import restaurant.meals.MainCourse;
+import restaurant.meals.Cookable;
+import restaurant.meals.Meal;
 import restaurant.util.Logger;
+import restaurant.util.PropLoader;
 import restaurant.util.Random;
 
 public class Desk implements Runnable {
 
+    private static final String MAX_ORDER_TIME = "desk.maxordertime";
+    private static final String MIN_ORDER_TIME = "desk.minordertime";
     private BlockingQueue<ClientGroup> deskQueue;
-    private BlockingQueue<MainCourse> mealQueue;
+    private BlockingQueue<Cookable> mealQueue;
     private BlockingQueue<ClientGroup> tableQueue;
 
-    public Desk(BlockingQueue<ClientGroup> deskQueue, BlockingQueue<MainCourse> mealQueue, BlockingQueue<ClientGroup> tableQueue) {
+    public Desk(BlockingQueue<ClientGroup> deskQueue, BlockingQueue<Cookable> mealQueue, BlockingQueue<ClientGroup> tableQueue) {
         this.deskQueue = deskQueue;
         this.mealQueue = mealQueue;
         this.tableQueue = tableQueue;
@@ -55,11 +59,11 @@ public class Desk implements Runnable {
 
     // Deskman asks Chefs for making the meal.
     private void giveRequest(Client client) throws InterruptedException {
-        Vector<MainCourse> meals = client.getMealList();
-        long minOrderTime = Long.valueOf((String) Entrance.CONFIG.get("desk.minordertime"));
-        long maxOrderTime = Long.valueOf((String) Entrance.CONFIG.get("desk.maxordertime"));
+        List<Meal> meals = client.getMealList();
+        long minOrderTime = PropLoader.getLongProperty(MIN_ORDER_TIME);
+        long maxOrderTime = PropLoader.getLongProperty(MAX_ORDER_TIME);
 
-        for (MainCourse meal : meals) {
+        for (Meal meal : meals) {
 
             long sleepTime = Random.randLong(minOrderTime, maxOrderTime);
             Thread.sleep(sleepTime);
@@ -77,9 +81,9 @@ public class Desk implements Runnable {
             Thread.sleep(100);
 
             for (Client client : members) {
-                Vector<MainCourse> meals = client.getMealList();
+                List<Meal> meals = client.getMealList();
 
-                for (MainCourse meal : meals) {
+                for (Meal meal : meals) {
                     if (!meal.isCooked()) {
                         allReady = false;
                     }
