@@ -6,6 +6,7 @@ Indítás: restaurant.Entrance
 Java 9-el lett fordítva
 
 Flow:
+- Adatok beolvasása .properties fájlokból
 - Várólisták létrehozása java.util.concurrent.ArrayBlockingQueue
     - deskQueue - Kiszolgálásra váró ClientGroupok
     - mealQueue - Elkészítésre váró ételek
@@ -46,7 +47,6 @@ Osztályok:
 - restaurant.client.Client
     - Tárolja az adott "Személyre" vonatkozó adatokat
     - Indítás után "elfogyasztja az ételeit"
-    - Az elfogyasztott ételek megnövelik a morálját
 - restaurant.service.Desk
     - Fogadja a ClientGroupokat
     - Felveszi az adott ClientGrouphoz tartozó Clientek rendelését
@@ -65,20 +65,33 @@ Osztályok:
 - restaurant.service.Cassa
     - Kiveszi a ClientGroup-okat a cassaQueue-ból, és megadott tartományon belül véletlenszerű idő alatt "kifizetteti a számlát"
     - Elindítja a leállítási folyamatot, ha az összes Client elhagyta az üzletet
-- restaurant.meals
-    - Az egyes ételek jellemzői
-- restaurant.util.Constants
-    - A tartományokat meghatározó értékeket tárolja
-    - Helyettesíthető lenne egy .properties fájllal
+- restaurant.meals.FoodType
+    - Tárolja egy bizonyos MainCourse vagy Extra adatait.
+- restaurant.meals.Food
+    - Véletlenszerű MainCourse létrehozása
+    - Véletlenszerű Extra lista létrehozása
+    - Tárolja az adott Food állapotát
+- restaurant.meals.Meal
+    - Véletlenszerű Meal lista létrehozása
+    - Tárolja az adott fogáshoz tartozó MainCourse-t és Extrákat
+    - Beállítja a tárolt Foodok állapotát
+    - Növeli az őt elfogyasztó Client morálját
 - restaurant.util.Logger
-    - Egyszerű logolás
+    - Kiírja a kapott üzeneteket
+    - A kiírás nem valós idejű
     - System.out a részletes, System.err a fontos dolgokat jeleníti meg.
 - restaurant.util.Random
     - Különféle véletlenszerű értékeket szolgáltat
 - restaurant.util.TableSortingComparator
     - TableService használja a Table-k férőhely szerinti sorba rendezéséhez.
     - Cél: A ClientGroupok méretének leginkább megfelelő asztal lefoglalása
+    restaurant.util.FoodComparator
+        - Moralváltoztató érték alapján sorba rendezi a Foodokat
 - restaurant.util.Logout
     - Bezárja az alkalmazást
     - Kilogolja a statisztikát
+- restaurant.util.PropLoader
+    - Beolvassa .properties fájlokból az étterem adatait
+    - Elkészíti a felszolgálható MainCourse-ok és Extrák listáját
+    - Hozzáférést biztosít a beolvasott értékeknek
     
