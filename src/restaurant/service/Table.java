@@ -1,6 +1,5 @@
 package restaurant.service;
 
-import restaurant.util.Logger;
 import restaurant.util.PropLoader;
 import restaurant.util.Random;
 
@@ -26,7 +25,6 @@ public class Table {
         tablePlaces += tableSize;
 
         Table table = new Table(tableSize);
-        Logger.logToErr(table.toString() + " is created.");
         return table;
     }
 

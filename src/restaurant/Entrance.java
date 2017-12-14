@@ -101,10 +101,13 @@ public class Entrance {
         int maxClientGroupSize = PropLoader.getIntegerProperty(MAX_CLIENT_GROUP_SIZE);
 
         List<Table> tables = new ArrayList<>(tableCount + 1);
-        tables.add(new Table(maxClientGroupSize));
+        Table maxSizeTable = new Table(maxClientGroupSize);
+        tables.add(maxSizeTable);
+        Logger.logToErr(maxSizeTable.toString() + " is created.");
 
         for (int x = 0; x < tableCount; x++) {
             Table table = Table.randomTableFactory();
+            Logger.logToErr(table.toString() + " is created.");
             tables.add(table);
         }
 

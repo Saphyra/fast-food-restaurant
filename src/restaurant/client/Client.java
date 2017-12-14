@@ -49,16 +49,8 @@ public class Client implements Runnable {
         setReadyWidthFood(true);
     }
 
-    public String getName() {
-        return name;
-    }
-
     public double getMoral() {
         return moral;
-    }
-
-    public void setMoral(double moral) {
-        this.moral = moral;
     }
 
     public List<Meal> getMealList() {

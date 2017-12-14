@@ -112,10 +112,6 @@ public class ClientGroup implements Runnable {
         return clientNum;
     }
 
-    public Table getTable() {
-        return table;
-    }
-
     public void setTable(Table table) {
         this.table = table;
     }
