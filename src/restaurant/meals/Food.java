@@ -1,14 +1,41 @@
 package restaurant.meals;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import restaurant.util.PropLoader;
 import restaurant.util.Random;
 
-public class Food implements Eatable, Cookable {
+public class Food<T> implements ComparableFood, Cookable {
     private final FoodType foodType;
     private boolean cooked = false;
     private boolean eaten = false;
 
     public Food(FoodType foodType) {
         this.foodType = foodType;
+    }
+
+    public static List<Food<Extra>> createRandomExtraList() {
+        List<Food<Extra>> extras = new ArrayList<>();
+        Set<String> extraTypes = PropLoader.getExtraTypes();
+        for (String extraType : extraTypes) {
+            if (Random.randBoolean()) {
+                Food<Extra> extra = new Food<Extra>(PropLoader.getExtra(extraType));
+                extras.add(extra);
+            }
+        }
+
+        return extras;
+    }
+
+    public static Food<MainCourse> createRandomMainCourse() {
+        Set<String> mainCourses = PropLoader.getMainCourseTypes();
+        Object[] mainCourseArr = mainCourses.toArray();
+        String type = (String) mainCourseArr[Random.randInt(0, mainCourseArr.length - 1)];
+
+        Food<MainCourse> food = new Food<>(PropLoader.getMainCourse(type));
+        return food;
     }
 
     @Override
@@ -55,6 +82,7 @@ public class Food implements Eatable, Cookable {
         this.eaten = eaten;
     }
 
+    @Override
     public FoodType getFoodType() {
         return foodType;
     }
@@ -63,4 +91,14 @@ public class Food implements Eatable, Cookable {
     public String toString() {
         return foodType.getName();
     }
+
+    @Override
+    public int compareTo(ComparableFood arg) {
+        int result = 0;
+        if (foodType.getBaseMoralMultiply() < arg.getFoodType().getBaseMoralMultiply()) {
+            result = -1;
+        }
+        return result;
+    }
+
 }

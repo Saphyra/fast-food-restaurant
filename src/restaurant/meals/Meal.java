@@ -11,10 +11,10 @@ import restaurant.util.Random;
 public class Meal implements Cookable, Eatable {
     private static final String MAX_MEAL_COUNT = "client.maxmealcount";
     private static final String MIN_MEAL_COUNT = "client.minmealcount";
-    private final MainCourse mainCourse;
-    private final List<Extra> extras;
+    private final Food<MainCourse> mainCourse;
+    private final List<Food<Extra>> extras;
 
-    private Meal(MainCourse mainCourse, List<Extra> extras) {
+    private Meal(Food<MainCourse> mainCourse, List<Food<Extra>> extras) {
         this.mainCourse = mainCourse;
         this.extras = extras;
     }
@@ -33,8 +33,8 @@ public class Meal implements Cookable, Eatable {
     }
 
     private static Meal createRandomMeal() {
-        MainCourse mainCourse = MainCourse.createRandomMainCourse();
-        List<Extra> extras = Extra.createRandomExtraList();
+        Food<MainCourse> mainCourse = Food.createRandomMainCourse();
+        List<Food<Extra>> extras = Food.createRandomExtraList();
 
         return new Meal(mainCourse, extras);
     }
@@ -42,18 +42,18 @@ public class Meal implements Cookable, Eatable {
     @Override
     public void eat() {
         mainCourse.eat();
-        for (Extra extra : extras) {
+        for (Food<Extra> extra : extras) {
             extra.eat();
         }
     }
 
     public double moralIncrement(double baseMoral) {
-        List<Food> foods = collectFoods();
+        List<ComparableFood> foods = collectFoods();
 
         double allMoralAddition = 0;
         double allMoralMultiply = 1;
 
-        for (Food food : foods) {
+        for (ComparableFood food : foods) {
             FoodType type = food.getFoodType();
             if (type.getBaseMoralMultiply() == 0) {
                 allMoralAddition = 0;
@@ -70,11 +70,11 @@ public class Meal implements Cookable, Eatable {
         return baseMoral;
     }
 
-    private List<Food> collectFoods() {
-        List<Food> foods = new ArrayList<>();
-        foods.add(mainCourse.getFood());
-        for (Extra extra : extras) {
-            foods.add(extra.getFood());
+    private List<ComparableFood> collectFoods() {
+        List<ComparableFood> foods = new ArrayList<>();
+        foods.add(mainCourse);
+        for (Food<Extra> extra : extras) {
+            foods.add(extra);
         }
         foods.sort(new FoodComparator());
         return foods;
@@ -83,7 +83,7 @@ public class Meal implements Cookable, Eatable {
     @Override
     public void cook() {
         mainCourse.cook();
-        for (Extra extra : extras) {
+        for (Cookable extra : extras) {
             extra.cook();
         }
     }
@@ -94,7 +94,7 @@ public class Meal implements Cookable, Eatable {
         if (!mainCourse.isEaten()) {
             result = false;
         }
-        for (Extra extra : extras) {
+        for (Eatable extra : extras) {
             if (!extra.isEaten()) {
                 result = false;
             }
@@ -108,7 +108,7 @@ public class Meal implements Cookable, Eatable {
         if (!mainCourse.isCooked()) {
             result = false;
         }
-        for (Extra extra : extras) {
+        for (Cookable extra : extras) {
             if (!extra.isCooked()) {
                 result = false;
             }
@@ -134,8 +134,8 @@ public class Meal implements Cookable, Eatable {
 
         if (!extras.isEmpty()) {
             builder.append(" with ");
-            Iterator<Extra> iter = extras.iterator();
-            Extra first = iter.next();
+            Iterator<Food<Extra>> iter = extras.iterator();
+            Food<Extra> first = iter.next();
             builder.append(first.toString());
 
             while (iter.hasNext()) {
