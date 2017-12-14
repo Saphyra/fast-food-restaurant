@@ -7,6 +7,8 @@ public class Logger implements Runnable {
         ERR, OUT
     }
 
+    private static final String CONSOLE_SLEEP_TIME = "logger.consolesleeptime";
+    private static final String ERROR_SLEEP_TIME = "logger.errorsleeptime";
     private static LinkedBlockingQueue<LogMessage> queue = new LinkedBlockingQueue<>();
 
     public static void logToConsole(String message) {
@@ -27,12 +29,11 @@ public class Logger implements Runnable {
                 switch (message.getMode()) {
                 case OUT:
                     System.out.println(message.getMessage());
-                    // TODO sleeptimes from properties
-                    Thread.sleep(100);
+                    Thread.sleep(PropLoader.getLongProperty(CONSOLE_SLEEP_TIME));
                     break;
                 case ERR:
                     System.err.println(message.getMessage());
-                    Thread.sleep(1000);
+                    Thread.sleep(PropLoader.getLongProperty(ERROR_SLEEP_TIME));
                     break;
                 }
             } catch (InterruptedException e1) {

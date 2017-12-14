@@ -5,13 +5,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import restaurant.meals.Meal;
 import restaurant.util.Logger;
+import restaurant.util.PropLoader;
 import restaurant.util.Random;
 
 //Storing Client data
 public class Client implements Runnable {
-    // TODO Moral from properties
-    private static final double MIN_MORAL = 0.1;
-    private static final int MAX_MORAL = 10;
+    private static final String MIN_MORAL = "client.minmoral";
+    private static final String MAX_MORAL = "client.maxmoral";
 
     private final String name;
     private final String groupid;
@@ -24,7 +24,11 @@ public class Client implements Runnable {
     public Client(int id, String groupid, int groupClientNum) {
         name = "Client" + id;
         mealList = Meal.createRandomMealList();
-        moral = Random.randDouble(MIN_MORAL, MAX_MORAL);
+
+        double minMoral = PropLoader.getDoubleProperty(MIN_MORAL);
+        double maxMoral = PropLoader.getDoubleProperty(MAX_MORAL);
+
+        moral = Random.randDouble(minMoral, maxMoral);
         this.groupid = groupid;
         this.groupClientNum = groupClientNum;
     }

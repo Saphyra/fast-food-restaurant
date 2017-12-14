@@ -20,6 +20,10 @@ import restaurant.util.TableSortingComparator;
 
 //Creating components
 public class Entrance {
+    private static final String DESK_QUEUE_SIZE = "entrance.deskqueuesize";
+    private static final String MEAL_QUEUE_SIZE = "entrance.mealqueuesize";
+    private static final String TABLE_QUEUE_SIZE = "entrance.tablequeuesize";
+    private static final String CASSA_QUEUE_SIZE = "entrance.cassaqueuesize";
     private static final String MAX_CLIENT_GROUP_SIZE = "clientgroup.maxsize";
     private static final String TABLE_COUNT = "table.count";
     private static final String CHEF_COUNT = "chef.count";
@@ -28,11 +32,10 @@ public class Entrance {
 
     public static void main(String[] args) {
         PropLoader.init();
-        // TODO queue sizes from properties
-        BlockingQueue<ClientGroup> deskQueue = new ArrayBlockingQueue<>(5);
-        BlockingQueue<Cookable> mealQueue = new ArrayBlockingQueue<>(20);
-        BlockingQueue<ClientGroup> tableQueue = new ArrayBlockingQueue<>(5);
-        BlockingQueue<ClientGroup> cassaQueue = new ArrayBlockingQueue<>(5);
+        BlockingQueue<ClientGroup> deskQueue = new ArrayBlockingQueue<>(PropLoader.getIntegerProperty(DESK_QUEUE_SIZE));
+        BlockingQueue<Cookable> mealQueue = new ArrayBlockingQueue<>(PropLoader.getIntegerProperty(MEAL_QUEUE_SIZE));
+        BlockingQueue<ClientGroup> tableQueue = new ArrayBlockingQueue<>(PropLoader.getIntegerProperty(TABLE_QUEUE_SIZE));
+        BlockingQueue<ClientGroup> cassaQueue = new ArrayBlockingQueue<>(PropLoader.getIntegerProperty(CASSA_QUEUE_SIZE));
 
         startLogger();
 
