@@ -52,6 +52,10 @@ public class MainCourse implements Eatable, Cookable {
         food.setCooked(cooked);
     }
 
+    public Food getFood() {
+        return food;
+    }
+
     @Override
     public String toString() {
         return food.toString();

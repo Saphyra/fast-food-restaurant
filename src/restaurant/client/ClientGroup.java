@@ -47,7 +47,9 @@ public class ClientGroup implements Runnable {
         Vector<Client> groupMembers = new Vector<>();
         for (int x = 0; x < clientNum; x++) {
             clientCount++;
-            groupMembers.add(new Client(clientCount, groupid));
+            Client client = new Client(clientCount, groupid, clientNum);
+            Logger.logToConsole("New Client: " + client.toString());
+            groupMembers.add(client);
         }
         return groupMembers;
     }

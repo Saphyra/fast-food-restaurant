@@ -55,8 +55,10 @@ public class PropLoader {
         long maxEatTime = Long.valueOf(source.getProperty(type + ".maxeattime"));
         double moralAddition = Double.valueOf(source.getProperty(type + ".moraladdition"));
         double moralMultiply = Double.valueOf(source.getProperty(type + ".moralmultiply"));
-        FoodType foodType = new FoodType(type, name, minCookTime, maxCookTime, minEatTime, maxEatTime, moralAddition, moralMultiply);
+        double baseMoralMultiply = Double.valueOf(source.getProperty(type + ".basemoralmultiply"));
 
+        FoodType foodType = new FoodType(type, name, minCookTime, maxCookTime, minEatTime, maxEatTime, moralAddition, moralMultiply, baseMoralMultiply);
+        Logger.logToConsole(foodType.toString() + " is loaded.");
         return foodType;
     }
 
@@ -73,16 +75,7 @@ public class PropLoader {
     }
 
     public static synchronized FoodType getExtra(String type) {
-        FoodType result;
-        try {
-            result = extras.get(type);
-            if (result == null) {
-                throw new Exception();
-            }
-        } catch (Exception e) {
-            result = new FoodType("0", "Extra", 0L, 0L, 0L, 0L, 0, 0);
-        }
-        return result;
+        return extras.get(type);
     }
 
     public static synchronized long getLongProperty(String entry) {

@@ -28,6 +28,7 @@ public class Entrance {
 
     public static void main(String[] args) {
         PropLoader.init();
+        // TODO queue sizes from properties
         BlockingQueue<ClientGroup> deskQueue = new ArrayBlockingQueue<>(5);
         BlockingQueue<Cookable> mealQueue = new ArrayBlockingQueue<>(20);
         BlockingQueue<ClientGroup> tableQueue = new ArrayBlockingQueue<>(5);

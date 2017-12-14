@@ -59,6 +59,10 @@ public class Extra implements Cookable, Eatable {
         food.setCooked(cooked);
     }
 
+    public Food getFood() {
+        return food;
+    }
+
     @Override
     public String toString() {
         return food.toString();

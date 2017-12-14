@@ -27,6 +27,7 @@ public class Logger implements Runnable {
                 switch (message.getMode()) {
                 case OUT:
                     System.out.println(message.getMessage());
+                    // TODO sleeptimes from properties
                     Thread.sleep(100);
                     break;
                 case ERR:

@@ -58,6 +58,10 @@ public class Food implements Eatable, Cookable {
         this.eaten = eaten;
     }
 
+    public FoodType getFoodType() {
+        return foodType;
+    }
+
     @Override
     public String toString() {
         return foodType.getName();

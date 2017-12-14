@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import restaurant.util.FoodComparator;
 import restaurant.util.PropLoader;
 import restaurant.util.Random;
 
@@ -44,6 +45,39 @@ public class Meal implements Cookable, Eatable {
         for (Extra extra : extras) {
             extra.eat();
         }
+    }
+
+    public double moralIncrement(double baseMoral) {
+        List<Food> foods = collectFoods();
+
+        double allMoralAddition = 0;
+        double allMoralMultiply = 1;
+
+        for (Food food : foods) {
+            FoodType type = food.getFoodType();
+            if (type.getBaseMoralMultiply() == 0) {
+                allMoralAddition = 0;
+                allMoralMultiply = 1;
+            } else {
+                allMoralMultiply += 1 - type.getBaseMoralMultiply();
+            }
+            allMoralAddition += type.getMoralAddition();
+            allMoralMultiply += type.getMoralMultiply() - 1;
+        }
+
+        baseMoral = (baseMoral + allMoralAddition) * allMoralMultiply;
+
+        return baseMoral;
+    }
+
+    private List<Food> collectFoods() {
+        List<Food> foods = new ArrayList<>();
+        foods.add(mainCourse.getFood());
+        for (Extra extra : extras) {
+            foods.add(extra.getFood());
+        }
+        foods.sort(new FoodComparator());
+        return foods;
     }
 
     @Override
