@@ -16,6 +16,9 @@ public class Desk implements Runnable {
 
     private static final String MAX_ORDER_TIME = "desk.maxordertime";
     private static final String MIN_ORDER_TIME = "desk.minordertime";
+    private long minOrderTime = PropLoader.getLongProperty(MIN_ORDER_TIME);
+    private long maxOrderTime = PropLoader.getLongProperty(MAX_ORDER_TIME);
+
     private BlockingQueue<ClientGroup> deskQueue;
     private BlockingQueue<Cookable> mealQueue;
     private BlockingQueue<ClientGroup> tableQueue;
@@ -31,40 +34,32 @@ public class Desk implements Runnable {
         while (true) {
             try {
                 ClientGroup group = deskQueue.take();
-                takeOrder(group);
-                sendToTableService(group);
+
+                Logger.logToErr(group + " are giving the orders.");
+                Vector<Client> members = group.getGroupMembers();
+
+                requestMeals(members);
+                waitForCooking(members);
+                sendGroupToTableService(group);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    // Taking the Group Members' orders.
-    private void takeOrder(ClientGroup group) throws InterruptedException {
-        Logger.logToErr(group + " are giving the orders.");
-        Vector<Client> members = group.getGroupMembers();
-        giveOrders(members);
-        waitForService(members);
-    }
-
     // Group Members say their orders...
-    private void giveOrders(Vector<Client> members) throws InterruptedException {
+    private void requestMeals(Vector<Client> members) throws InterruptedException {
         for (Client client : members) {
-
-            giveRequest(client);
-
+            requestMeal(client);
             Logger.logToConsole(client + "'s order is taken.");
         }
     }
 
     // Deskman asks Chefs for making the meal.
-    private void giveRequest(Client client) throws InterruptedException {
+    private void requestMeal(Client client) throws InterruptedException {
         List<Meal> meals = client.getMealList();
-        long minOrderTime = PropLoader.getLongProperty(MIN_ORDER_TIME);
-        long maxOrderTime = PropLoader.getLongProperty(MAX_ORDER_TIME);
 
         for (Meal meal : meals) {
-
             long sleepTime = Random.randLong(minOrderTime, maxOrderTime);
             Thread.sleep(sleepTime);
 
@@ -73,11 +68,10 @@ public class Desk implements Runnable {
     }
 
     // Waiting til all Group Members get all of their Main Courses
-    private void waitForService(Vector<Client> members) throws InterruptedException {
+    private void waitForCooking(Vector<Client> members) throws InterruptedException {
         boolean allReady;
         do {
             allReady = true;
-
             Thread.sleep(100);
 
             for (Client client : members) {
@@ -92,7 +86,7 @@ public class Desk implements Runnable {
         } while (!allReady);
     }
 
-    private void sendToTableService(ClientGroup group) throws InterruptedException {
+    private void sendGroupToTableService(ClientGroup group) throws InterruptedException {
         tableQueue.put(group);
         Logger.logToErr(group + " has got his food and searching for table.");
     }

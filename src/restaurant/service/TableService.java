@@ -19,23 +19,25 @@ public class TableService implements Runnable {
     @Override
     public void run() {
         int lastSize = 0;
-        int size = 0;
         while (true) {
-
             searchTableForWaitingGroups();
-
-            size = tableQueue.size();
-            if (size != lastSize) {
-                Logger.logToErr(tableQueue.size() + " groups are waiting for empty table." + " " + size + " - " + lastSize);
-                Logger.logToErr("Unsuitable empty tables: " + getEmptyTablesCount());
-                lastSize = size;
-            }
+            lastSize = logWaitingGroupNum(lastSize);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private int logWaitingGroupNum(int lastSize) {
+        int size = tableQueue.size();
+        if (size != lastSize) {
+            Logger.logToErr(tableQueue.size() + " groups are waiting for empty table." + " " + size + " - " + lastSize);
+            Logger.logToErr("Unsuitable empty tables: " + getEmptyTablesCount());
+            lastSize = size;
+        }
+        return lastSize;
     }
 
     private void searchTableForWaitingGroups() {
@@ -60,16 +62,16 @@ public class TableService implements Runnable {
     }
 
     private void reserveTable(ClientGroup group, Table table) {
-        group.setTable(table);
         table.setFree(false);
+        group.setTable(table);
         startGroup(group);
         tableQueue.remove(group);
     }
 
     private void startGroup(ClientGroup group) {
-        Thread th = new Thread(group);
-        th.setName(group.toString());
-        th.start();
+        Thread groupThread = new Thread(group);
+        groupThread.setName(group.toString());
+        groupThread.start();
     }
 
     private boolean isTableSuitable(int clientNum, Table table) {

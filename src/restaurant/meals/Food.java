@@ -8,9 +8,6 @@ public class Food implements Eatable, Cookable {
     private boolean eaten = false;
 
     public Food(FoodType foodType) {
-        if (foodType == null) {
-            throw new NullPointerException();
-        }
         this.foodType = foodType;
     }
 
@@ -23,7 +20,7 @@ public class Food implements Eatable, Cookable {
             Thread.sleep(sleepTime);
             setCooked(true);
         } catch (InterruptedException e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -44,7 +41,7 @@ public class Food implements Eatable, Cookable {
             Thread.sleep(sleepTime);
             setEaten(true);
         } catch (InterruptedException e) {
-
+            e.printStackTrace();
         }
     }
 

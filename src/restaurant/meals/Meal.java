@@ -24,7 +24,7 @@ public class Meal implements Cookable, Eatable {
         int maxMealCount = PropLoader.getIntegerProperty(MAX_MEAL_COUNT);
         int mealCount = Random.randInt(minMealCount, maxMealCount);
 
-        List<Meal> mealList = new ArrayList<>();
+        List<Meal> mealList = new ArrayList<>(mealCount);
         for (int x = 0; x < mealCount; x++) {
             mealList.add(createRandomMeal());
         }

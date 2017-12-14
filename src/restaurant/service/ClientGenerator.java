@@ -11,6 +11,10 @@ public class ClientGenerator implements Runnable {
     private static final String MAX_DELAY = "clientgenerator.maxdelay";
     private static final String MIN_DELAY = "clientgenerator.mindelay";
     private static final String CLIENT_NUM = "clientgenerator.clientnum";
+    private int clientNum = PropLoader.getIntegerProperty(CLIENT_NUM);
+    private long minDelay = PropLoader.getLongProperty(MIN_DELAY);
+    private long maxDelay = PropLoader.getLongProperty(MAX_DELAY);
+
     private BlockingQueue<ClientGroup> deskQueue;
     private BlockingQueue<ClientGroup> cassaQueue;
 
@@ -19,12 +23,8 @@ public class ClientGenerator implements Runnable {
         this.cassaQueue = cassaQueue;
     }
 
-    // Creating new Client Groups til the limit reaches
     @Override
     public void run() {
-        int clientNum = PropLoader.getIntegerProperty(CLIENT_NUM);
-        long minDelay = PropLoader.getLongProperty(MIN_DELAY);
-        long maxDelay = PropLoader.getLongProperty(MAX_DELAY);
 
         while (ClientGroup.getClientCount() < clientNum) {
             try {
@@ -35,12 +35,12 @@ public class ClientGenerator implements Runnable {
                 e.printStackTrace();
             }
         }
-        Logger.logToErr("No more customers.");
+        Logger.logToErr("No more clients.");
     }
 
     private void createClientGroup() throws InterruptedException {
         ClientGroup group = ClientGroup.clientGroupFactory(cassaQueue);
         deskQueue.put(group);
-        Logger.logToErr("New clients!");
+        Logger.logToErr("New clients! - " + ClientGroup.getClientCount() + "/" + PropLoader.getIntegerProperty(CLIENT_NUM));
     }
 }

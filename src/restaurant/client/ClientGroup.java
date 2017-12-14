@@ -12,11 +12,11 @@ import restaurant.util.Random;
 public class ClientGroup implements Runnable {
     private static final String MAX_CLIENT_GROUP_SIZE = "clientgroup.maxsize";
     private static final String MIN_CLIENT_GROUP_SIZE = "clientgroup.minsize";
+
     private static int clientCount = 0;
     private static int clientGroupCount = 0;
 
     private final Vector<Client> groupMembers = new Vector<>();
-
     private final String id;
     private final int clientNum;
     private Table table;
@@ -27,7 +27,6 @@ public class ClientGroup implements Runnable {
         this.id = id;
         this.clientNum = groupMembers.size();
         this.cassaQueue = cassaQueue;
-        Logger.logToErr(toString() + " group created");
     }
 
     // Creating new group of Clients
@@ -39,43 +38,43 @@ public class ClientGroup implements Runnable {
         String groupid = "ClientGroup" + ++clientGroupCount;
         Vector<Client> groupMembers = createClients(clientNum, groupid);
 
-        return new ClientGroup(groupMembers, groupid, cassaQueue);
+        ClientGroup group = new ClientGroup(groupMembers, groupid, cassaQueue);
+        Logger.logToErr(group.toString() + " group created");
+        return group;
     }
 
     // Creating Clients
     private static Vector<Client> createClients(int clientNum, String groupid) {
         Vector<Client> groupMembers = new Vector<>();
+
         for (int x = 0; x < clientNum; x++) {
-            clientCount++;
-            Client client = new Client(clientCount, groupid, clientNum);
+            Client client = new Client(++clientCount, groupid, clientNum);
             Logger.logToConsole("New Client: " + client.toString());
             groupMembers.add(client);
         }
+
         return groupMembers;
     }
 
     @Override
     public void run() {
         startEating();
-        waitingForMembers();
+        waitingForMembersEating();
         table.setFree(true);
     }
 
-    // Starting Client threads
     private void startEating() {
         for (Client client : groupMembers) {
-            Thread cl = new Thread(client);
-            cl.setName(client.toString());
-            cl.start();
+            Thread clientThread = new Thread(client);
+            clientThread.setName(client.toString());
+            clientThread.start();
         }
     }
 
-    // Waiting for members eating their food
-    private void waitingForMembers() {
-        boolean allAte = true;
+    private void waitingForMembersEating() {
         try {
+            boolean allAte;
             do {
-
                 allAte = true;
                 for (Client client : groupMembers) {
                     if (!client.isReadyWithFood()) {
@@ -83,7 +82,6 @@ public class ClientGroup implements Runnable {
                     }
                 }
                 Thread.sleep(500);
-
             } while (!allAte);
 
             Logger.logToErr(toString() + " has finished eating. Going to cassa.");

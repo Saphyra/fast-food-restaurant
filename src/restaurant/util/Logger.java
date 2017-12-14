@@ -11,6 +11,9 @@ public class Logger implements Runnable {
     private static final String ERROR_SLEEP_TIME = "logger.errorsleeptime";
     private static LinkedBlockingQueue<LogMessage> queue = new LinkedBlockingQueue<>();
 
+    private long consoleSleepTime = PropLoader.getLongProperty(CONSOLE_SLEEP_TIME);
+    private long errorSleepTime = PropLoader.getLongProperty(ERROR_SLEEP_TIME);
+
     public static void logToConsole(String message) {
         queue.add(new LogMessage(Mode.OUT, message));
     }
@@ -22,18 +25,17 @@ public class Logger implements Runnable {
     @Override
     public void run() {
         while (true) {
-            LogMessage message;
             try {
-                message = queue.take();
+                LogMessage message = queue.take();
 
                 switch (message.getMode()) {
                 case OUT:
                     System.out.println(message.getMessage());
-                    Thread.sleep(PropLoader.getLongProperty(CONSOLE_SLEEP_TIME));
+                    Thread.sleep(consoleSleepTime);
                     break;
                 case ERR:
                     System.err.println(message.getMessage());
-                    Thread.sleep(PropLoader.getLongProperty(ERROR_SLEEP_TIME));
+                    Thread.sleep(errorSleepTime);
                     break;
                 }
             } catch (InterruptedException e1) {

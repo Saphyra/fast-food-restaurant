@@ -1,7 +1,6 @@
 package restaurant.client;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import restaurant.meals.Meal;
 import restaurant.util.Logger;
@@ -19,25 +18,24 @@ public class Client implements Runnable {
     private final List<Meal> mealList;
 
     private double moral;
-    private AtomicBoolean readyWithFood = new AtomicBoolean(false);
+    private volatile boolean readyWithFood = false;
 
     public Client(int id, String groupid, int groupClientNum) {
         name = "Client" + id;
         mealList = Meal.createRandomMealList();
+        this.groupid = groupid;
+        this.groupClientNum = groupClientNum;
 
         double minMoral = PropLoader.getDoubleProperty(MIN_MORAL);
         double maxMoral = PropLoader.getDoubleProperty(MAX_MORAL);
-
         moral = Random.randDouble(minMoral, maxMoral);
-        this.groupid = groupid;
-        this.groupClientNum = groupClientNum;
     }
 
     @Override
     public void run() {
         double oldMoral = getMoral();
         eating();
-        Logger.logToErr(this + " has eaten his meal. Moral raised from " + oldMoral + " to " + getMoral());
+        Logger.logToErr(this + " has eaten his meals. Moral raised from " + oldMoral + " to " + getMoral());
     }
 
     // Eating food
@@ -68,11 +66,11 @@ public class Client implements Runnable {
     }
 
     public boolean isReadyWithFood() {
-        return readyWithFood.get();
+        return readyWithFood;
     }
 
     private void setReadyWidthFood(boolean value) {
-        readyWithFood.set(value);
+        readyWithFood = value;
     }
 
     @Override

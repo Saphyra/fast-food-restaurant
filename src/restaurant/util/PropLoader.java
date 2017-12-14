@@ -36,6 +36,7 @@ public class PropLoader {
 
     private static void loadFood(Properties source, Map<String, FoodType> target) {
         Set<Object> keys = source.keySet();
+
         for (Object entry : keys) {
             String key = (String) entry;
             if (key.endsWith(".type")) {

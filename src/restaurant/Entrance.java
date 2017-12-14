@@ -25,22 +25,28 @@ public class Entrance {
     private static final String TABLE_QUEUE_SIZE = "entrance.tablequeuesize";
     private static final String CASSA_QUEUE_SIZE = "entrance.cassaqueuesize";
     private static final String MAX_CLIENT_GROUP_SIZE = "clientgroup.maxsize";
+
     private static final String TABLE_COUNT = "table.count";
     private static final String CHEF_COUNT = "chef.count";
     private static final String WAITER_COUNT = "desk.waitercount";
+
     public static final long START_TIME = System.currentTimeMillis();
 
     public static void main(String[] args) {
         PropLoader.init();
+        start();
+    }
+
+    private static void start() {
         BlockingQueue<ClientGroup> deskQueue = new ArrayBlockingQueue<>(PropLoader.getIntegerProperty(DESK_QUEUE_SIZE));
         BlockingQueue<Cookable> mealQueue = new ArrayBlockingQueue<>(PropLoader.getIntegerProperty(MEAL_QUEUE_SIZE));
         BlockingQueue<ClientGroup> tableQueue = new ArrayBlockingQueue<>(PropLoader.getIntegerProperty(TABLE_QUEUE_SIZE));
         BlockingQueue<ClientGroup> cassaQueue = new ArrayBlockingQueue<>(PropLoader.getIntegerProperty(CASSA_QUEUE_SIZE));
 
-        startLogger();
+        createLogger();
 
-        openDoor(deskQueue, cassaQueue);
-        createDesk(deskQueue, mealQueue, tableQueue);
+        createClientGenerator(deskQueue, cassaQueue);
+        createDesks(deskQueue, mealQueue, tableQueue);
         createChefs(mealQueue);
 
         List<Table> tables = Collections.synchronizedList(createTables());
@@ -50,7 +56,7 @@ public class Entrance {
     }
 
     // Starting Logger
-    private static void startLogger() {
+    private static void createLogger() {
         Thread loggerThread = new Thread(new Logger());
         loggerThread.setName("Logger");
         loggerThread.start();
@@ -58,22 +64,22 @@ public class Entrance {
     }
 
     // Creating ClientGenerator
-    private static void openDoor(BlockingQueue<ClientGroup> deskQueue, BlockingQueue<ClientGroup> cassaQueue) {
+    private static void createClientGenerator(BlockingQueue<ClientGroup> deskQueue, BlockingQueue<ClientGroup> cassaQueue) {
         Thread generator = new Thread(new ClientGenerator(deskQueue, cassaQueue));
         generator.setName("ClientGenerator");
         generator.start();
-        Logger.logToConsole("Generator complete.");
+        Logger.logToConsole("The doors of the restaurant are opened.");
     }
 
     // Creating Desks
-    private static void createDesk(BlockingQueue<ClientGroup> deskQueue, BlockingQueue<Cookable> mealQueue, BlockingQueue<ClientGroup> tableQueue) {
+    private static void createDesks(BlockingQueue<ClientGroup> deskQueue, BlockingQueue<Cookable> mealQueue, BlockingQueue<ClientGroup> tableQueue) {
         int waiterCount = PropLoader.getIntegerProperty(WAITER_COUNT);
 
         for (int x = 1; x <= waiterCount; x++) {
-            Logger.logToConsole("Desk " + x + " created.");
             Thread thread = new Thread(new Desk(deskQueue, mealQueue, tableQueue));
             thread.setName("Desk " + x);
             thread.start();
+            Logger.logToConsole("Desk " + x + " is waiting for clients.");
         }
     }
 
@@ -82,10 +88,10 @@ public class Entrance {
         int chefCount = PropLoader.getIntegerProperty(CHEF_COUNT);
 
         for (int x = 1; x <= chefCount; x++) {
-            Logger.logToConsole("Chef " + x + " created.");
             Thread thread = new Thread(new Chef(mealQueue));
             thread.setName("Chef " + x);
             thread.start();
+            Logger.logToConsole("Chef " + x + " is heating the ovens.");
         }
     }
 
@@ -96,20 +102,22 @@ public class Entrance {
 
         List<Table> tables = new ArrayList<>(tableCount + 1);
         tables.add(new Table(maxClientGroupSize));
+
         for (int x = 0; x < tableCount; x++) {
             Table table = Table.randomTableFactory();
             tables.add(table);
         }
+
         tables.sort(new TableSortingComparator());
         return tables;
     }
 
     // Creating TableService
     private static void createTableService(BlockingQueue<ClientGroup> tableQueue, List<Table> tables) {
-        TableService tableService = new TableService(tableQueue, tables);
-        Thread tableServiceThread = new Thread(tableService);
+        Thread tableServiceThread = new Thread(new TableService(tableQueue, tables));
         tableServiceThread.setName("TableService");
         tableServiceThread.start();
+        Logger.logToConsole("Tables are cleaned.");
     }
 
     // Crating Cassa
@@ -117,5 +125,6 @@ public class Entrance {
         Thread cassa = new Thread(new Cassa(cassaQueue));
         cassa.setName("Cassa");
         cassa.start();
+        Logger.logToConsole("Cassa is waiting for money.");
     }
 }
