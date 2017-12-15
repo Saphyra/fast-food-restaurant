@@ -25,7 +25,7 @@ public class ClientGroup implements Runnable {
     private ClientGroup(Vector<Client> groupMembers, String id, BlockingQueue<ClientGroup> cassaQueue) {
         this.groupMembers.addAll(groupMembers);
         this.id = id;
-        this.clientNum = groupMembers.size();
+        clientNum = groupMembers.size();
         this.cassaQueue = cassaQueue;
     }
 

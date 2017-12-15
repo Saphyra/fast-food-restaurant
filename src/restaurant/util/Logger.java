@@ -7,10 +7,12 @@ public class Logger implements Runnable {
         ERR, OUT
     }
 
+    private static int logMessageCount = 0;
     private static final String CONSOLE_SLEEP_TIME = "logger.consolesleeptime";
     private static final String ERROR_SLEEP_TIME = "logger.errorsleeptime";
     private static LinkedBlockingQueue<LogMessage> queue = new LinkedBlockingQueue<>();
 
+    private long lastCheckTime = System.currentTimeMillis();
     private long consoleSleepTime = PropLoader.getLongProperty(CONSOLE_SLEEP_TIME);
     private long errorSleepTime = PropLoader.getLongProperty(ERROR_SLEEP_TIME);
 
@@ -27,21 +29,30 @@ public class Logger implements Runnable {
         while (true) {
             try {
                 LogMessage message = queue.take();
-
-                switch (message.getMode()) {
-                case OUT:
-                    System.out.println(message.getMessage());
-                    Thread.sleep(consoleSleepTime);
-                    break;
-                case ERR:
-                    System.err.println(message.getMessage());
-                    Thread.sleep(errorSleepTime);
-                    break;
-                }
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
+                printQueueSize();
+                printLog(message);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
+    }
+
+    private void printLog(LogMessage message) throws InterruptedException {
+        logMessageCount++;
+        switch (message.getMode()) {
+        case OUT:
+            System.out.println(message.getMessage());
+            Thread.sleep(consoleSleepTime);
+            break;
+        case ERR:
+            System.err.println(message.getMessage());
+            Thread.sleep(errorSleepTime);
+            break;
+        }
+    }
+
+    public static int getLogMessageCount() {
+        return logMessageCount;
     }
 
     private static class LogMessage {
@@ -49,7 +60,7 @@ public class Logger implements Runnable {
         private final String message;
 
         public LogMessage(Mode type, String message) {
-            this.mode = type;
+            mode = type;
             this.message = message;
         }
 
@@ -64,5 +75,16 @@ public class Logger implements Runnable {
 
     public static boolean isQueueEmpty() {
         return queue.size() == 0;
+    }
+
+    private void printQueueSize() throws InterruptedException {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime > lastCheckTime + 10000) {
+            lastCheckTime = currentTime;
+            if (queue.size() > 10) {
+                LogMessage message = new LogMessage(Mode.ERR, "Current log queue size: " + queue.size());
+                printLog(message);
+            }
+        }
     }
 }
