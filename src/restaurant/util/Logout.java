@@ -15,14 +15,15 @@ public class Logout {
         double clientNum = ClientGroup.getClientCount();
         int mealNum = Chef.getMealNum();
         double averageClientPerGroup = clientNum / clientGroupNum;
+        double logMessageCount = Logger.getLogMessageCount();
 
-        writeLog(runTime, clientGroupNum, clientNum, mealNum, averageClientPerGroup);
+        writeLog(runTime, clientGroupNum, clientNum, mealNum, averageClientPerGroup, logMessageCount);
         logPayOrder();
 
         System.exit(0);
     }
 
-    private static void writeLog(double runTime, double clientGroupNum, double clientNum, int mealNum, double averageClientPerGroup) {
+    private static void writeLog(double runTime, double clientGroupNum, double clientNum, int mealNum, double averageClientPerGroup, double logMessageCount) {
         System.out.println("Runtime: " + runTime + " seconds.");
         System.out.println(clientNum + " clients in " + clientGroupNum + " groups");
         System.out.println("Average " + averageClientPerGroup + " client/group");
@@ -31,6 +32,8 @@ public class Logout {
         System.out.println("Average service time: " + clientGroupNum / runTime * 100 + " client groups/100 second");
         System.out.println("Main courses eaten: " + mealNum);
         System.out.println("Average eating time: " + mealNum / runTime * 100 + " Main course/100 second");
+        System.out.println("Log messages printed: " + logMessageCount);
+        System.out.println("Average log messages: " + logMessageCount / runTime * 100 + " message/100 second");
     }
 
     private static void logPayOrder() {

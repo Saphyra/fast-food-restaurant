@@ -65,8 +65,8 @@ public class FoodType {
         StringBuilder builder = new StringBuilder();
 
         builder.append("Type: " + type).append(" - Name: " + name).append(" - minCookTime: " + minCookTime).append(" - maxCookTime: " + maxCookTime)
-                .append(" - minEatTime: " + minEatTime).append(" - maxEatTime: " + maxEatTime).append(" - moralAddition: " + moralAddition)
-                .append(" - moralMultiply: " + moralMultiply).append(" - baseMoralMultiply: " + baseMoralMultiply);
+        .append(" - minEatTime: " + minEatTime).append(" - maxEatTime: " + maxEatTime).append(" - moralAddition: " + moralAddition)
+        .append(" - moralMultiply: " + moralMultiply).append(" - baseMoralMultiply: " + baseMoralMultiply);
 
         return builder.toString();
     }

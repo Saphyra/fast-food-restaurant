@@ -36,6 +36,6 @@ public class Random {
     }
 
     public static boolean randBoolean() {
-        return (randInt(0, 1) == 1) ? true : false;
+        return randInt(0, 1) == 1 ? true : false;
     }
 }
