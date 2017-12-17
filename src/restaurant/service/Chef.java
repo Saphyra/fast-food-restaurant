@@ -7,12 +7,23 @@ import restaurant.util.Logger;
 import restaurant.util.PropLoader;
 
 public class Chef implements Runnable {
-    private static int mealNum = 0;
+
+    private static int chefCount;
+    private static volatile int mealNum = 0;
 
     private BlockingQueue<Cookable> mealQueue;
+    private final String name;
 
-    public Chef(BlockingQueue<Cookable> mealQueue) {
+    private Chef(BlockingQueue<Cookable> mealQueue, String name) {
         this.mealQueue = mealQueue;
+        this.name = name;
+    }
+
+    public static Chef chefFactory(BlockingQueue<Cookable> mealQueue) {
+        chefCount++;
+        String chefName = "Chef " + chefCount;
+        Chef chef = new Chef(mealQueue, chefName);
+        return chef;
     }
 
     @Override
@@ -46,5 +57,9 @@ public class Chef implements Runnable {
 
     private synchronized static void incMealNum() {
         mealNum++;
+    }
+
+    public String getName() {
+        return name;
     }
 }

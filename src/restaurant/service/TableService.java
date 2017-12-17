@@ -54,8 +54,6 @@ public class TableService implements Runnable {
         for (Table table : tables) {
             if (isTableSuitable(clientNum, table)) {
                 reserveTable(group, table);
-
-                Logger.logToErr(group + " has found a table! - Table: " + table);
                 break;
             }
         }
@@ -64,18 +62,18 @@ public class TableService implements Runnable {
     private void reserveTable(ClientGroup group, Table table) {
         table.setFree(false);
         group.setTable(table);
+        Logger.logToErr(group + " has found a table! - Table: " + table);
         startGroup(group);
         tableQueue.remove(group);
     }
 
     private void startGroup(ClientGroup group) {
-        Thread groupThread = new Thread(group);
-        groupThread.setName(group.toString());
+        Thread groupThread = new Thread(group, group.toString());
         groupThread.start();
     }
 
     private boolean isTableSuitable(int clientNum, Table table) {
-        return table.isFree() == true && table.getTableSize() >= clientNum;
+        return table.isFree() && table.getTableSize() >= clientNum;
     }
 
     private int getEmptyTablesCount() {

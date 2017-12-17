@@ -37,6 +37,17 @@ public class Logger implements Runnable {
         }
     }
 
+    private void printQueueSize() throws InterruptedException {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime > lastCheckTime + 10000) {
+            lastCheckTime = currentTime;
+            if (queue.size() > 10) {
+                LogMessage message = new LogMessage(Mode.ERR, "Current log queue size: " + queue.size());
+                printLog(message);
+            }
+        }
+    }
+
     private void printLog(LogMessage message) throws InterruptedException {
         logMessageCount++;
         switch (message.getMode()) {
@@ -77,14 +88,4 @@ public class Logger implements Runnable {
         return queue.size() == 0;
     }
 
-    private void printQueueSize() throws InterruptedException {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime > lastCheckTime + 10000) {
-            lastCheckTime = currentTime;
-            if (queue.size() > 10) {
-                LogMessage message = new LogMessage(Mode.ERR, "Current log queue size: " + queue.size());
-                printLog(message);
-            }
-        }
-    }
 }

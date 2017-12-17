@@ -11,6 +11,7 @@ public class ClientGenerator implements Runnable {
     private static final String MAX_DELAY = "clientgenerator.maxdelay";
     private static final String MIN_DELAY = "clientgenerator.mindelay";
     private static final String CLIENT_NUM = "clientgenerator.clientnum";
+
     private int clientNum = PropLoader.getIntegerProperty(CLIENT_NUM);
     private long minDelay = PropLoader.getLongProperty(MIN_DELAY);
     private long maxDelay = PropLoader.getLongProperty(MAX_DELAY);
@@ -40,7 +41,7 @@ public class ClientGenerator implements Runnable {
 
     private void createClientGroup() throws InterruptedException {
         ClientGroup group = ClientGroup.clientGroupFactory(cassaQueue);
-        deskQueue.put(group);
         Logger.logToErr("New clients! - " + ClientGroup.getClientCount() + "/" + PropLoader.getIntegerProperty(CLIENT_NUM));
+        deskQueue.put(group);
     }
 }

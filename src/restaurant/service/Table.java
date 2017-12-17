@@ -7,15 +7,17 @@ import restaurant.util.Random;
 public class Table {
     private static final String MAX_CLIENT_GROUP_SIZE = "clientgroup.maxsize";
     private static final String MIN_CLIENT_GROUP_SIZE = "clientgroup.minsize";
+
     private static int tablePlaces = 0;
     private static int tableCounter = 0;
+
     private volatile boolean free = true;
     private final int tableSize;
     private final String name;
 
-    public Table(int size) {
+    public Table(int size, String name) {
         tableSize = size;
-        name = "Table" + ++tableCounter;
+        this.name = name;
     }
 
     public static Table randomTableFactory() {
@@ -30,7 +32,9 @@ public class Table {
     }
 
     public static Table tableFactory(int size) {
-        Table table = new Table(size);
+        tableCounter++;
+        String name = "Table" + tableCounter;
+        Table table = new Table(size, name);
         Logger.logToErr(table.toString() + " is created.");
         return table;
     }

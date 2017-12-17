@@ -17,6 +17,7 @@ public class Cassa implements Runnable {
 
     private static final String MAX_PAY_TIME = "cassa.maxpaytime";
     private static final String MIN_PAY_TIME = "cassa.minpaytime";
+
     private long minPayTime = PropLoader.getLongProperty(MIN_PAY_TIME);
     private long maxPayTime = PropLoader.getLongProperty(MAX_PAY_TIME);
 
@@ -40,6 +41,7 @@ public class Cassa implements Runnable {
 
     private void processPayment() throws InterruptedException {
         ClientGroup group = cassaQueue.take();
+
         clientNum += group.getClientNum();
 
         long sleepTime = Random.randLong(minPayTime, maxPayTime);
