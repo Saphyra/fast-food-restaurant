@@ -24,6 +24,7 @@ public class Entrance {
     private static final String MEAL_QUEUE_SIZE = "entrance.mealqueuesize";
     private static final String TABLE_QUEUE_SIZE = "entrance.tablequeuesize";
     private static final String CASSA_QUEUE_SIZE = "entrance.cassaqueuesize";
+    private static final String MAX_CLIENT_GROUP_SIZE = "clientgroup.maxsize";
 
     private static final String TABLE_COUNT = "table.count";
     private static final String CHEF_COUNT = "chef.count";
@@ -96,15 +97,15 @@ public class Entrance {
 
     // Creating Tables
     private static List<Table> createTables() {
-        int tableCount = PropLoader.getIntegerProperty(TABLE_COUNT);
+        int tableCount = PropLoader.getIntegerProperty(TABLE_COUNT) - 1;
+        int maxClientGroupSize = PropLoader.getIntegerProperty(MAX_CLIENT_GROUP_SIZE);
 
         List<Table> tables = new ArrayList<>(tableCount + 1);
 
-        tables.add(Table.randomTableFactory());
+        tables.add(Table.tableFactory(maxClientGroupSize));
 
         for (int x = 0; x < tableCount; x++) {
             Table table = Table.randomTableFactory();
-            Logger.logToErr(table.toString() + " is created.");
             tables.add(table);
         }
 

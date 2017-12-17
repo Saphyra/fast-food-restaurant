@@ -1,5 +1,6 @@
 package restaurant.service;
 
+import restaurant.util.Logger;
 import restaurant.util.PropLoader;
 import restaurant.util.Random;
 
@@ -24,7 +25,13 @@ public class Table {
         int tableSize = Random.randInt(minClientGroupSize, maxClientGroupSize);
         tablePlaces += tableSize;
 
-        Table table = new Table(tableSize);
+        Table table = tableFactory(tableSize);
+        return table;
+    }
+
+    public static Table tableFactory(int size) {
+        Table table = new Table(size);
+        Logger.logToErr(table.toString() + " is created.");
         return table;
     }
 

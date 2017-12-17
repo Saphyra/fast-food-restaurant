@@ -30,8 +30,8 @@ public class Logout {
         System.out.println("Table places in the restaurant: " + Table.getTablePlaces());
         System.out.println("Average service time: " + clientNum / runTime * 100 + " clients/100 second");
         System.out.println("Average service time: " + clientGroupNum / runTime * 100 + " client groups/100 second");
-        System.out.println("Main courses eaten: " + mealNum);
-        System.out.println("Average eating time: " + mealNum / runTime * 100 + " Main course/100 second");
+        System.out.println("Meals eaten: " + mealNum);
+        System.out.println("Average eating time: " + mealNum / runTime * 100 + " Meals/100 second");
         System.out.println("Log messages printed: " + logMessageCount);
         System.out.println("Average log messages: " + logMessageCount / runTime * 100 + " message/100 second");
     }
