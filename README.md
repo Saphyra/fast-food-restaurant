@@ -1,4 +1,4 @@
-# fast-food-restaurant
+﻿# fast-food-restaurant
 Java Design Patterns Homework
 
 Jar indítható.
@@ -37,6 +37,8 @@ Osztályok:
 - restaurant.Entrance
     - Alkalmazás indítása
     - Inicializálás
+restaurant.Restaurant
+    - Service-k indítása
 - restaurant.service.ClientGenerator
     - Tartományon belül véletlenszerű időközönként legenerál egy ClientGroupot, amit berak a deskQueue-ba
 - restaurant.client.ClientGroup
