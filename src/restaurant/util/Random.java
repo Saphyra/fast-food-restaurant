@@ -1,6 +1,10 @@
 package restaurant.util;
 
-public class Random {
+public final class Random {
+
+    private Random() {
+
+    }
 
     public static int randInt(int min, int max) {
         Double rand = Math.floor(Math.random() * (max - min + 1) + min);

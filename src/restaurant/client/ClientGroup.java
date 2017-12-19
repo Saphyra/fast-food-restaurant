@@ -15,7 +15,7 @@ public class ClientGroup implements Runnable {
     private static final String MAX_CLIENT_GROUP_SIZE = "clientgroup.maxsize";
     private static final String MIN_CLIENT_GROUP_SIZE = "clientgroup.minsize";
 
-    private static int clientCount = 0;
+    private static volatile int clientCount = 0;
     private static int clientGroupCount = 0;
 
     private final Map<String, Client> groupMembers;

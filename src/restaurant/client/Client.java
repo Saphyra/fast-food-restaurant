@@ -71,7 +71,7 @@ public class Client implements Runnable {
         }
 
         mealList.add(meal);
-        Logger.logToConsole(toString() + " has got one some of his meals. (" + mealList.size() + " / " + mealOrderList.size() + ")");
+        Logger.logToConsole(toString() + " has got one of his meal orders. (" + meal.toString() + ") (" + mealList.size() + " / " + mealOrderList.size() + ")");
 
     }
 

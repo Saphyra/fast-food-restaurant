@@ -62,7 +62,7 @@ public class Chef implements Runnable {
 
         mealPackageQueue.put(mealPackage);
 
-        Logger.logToConsole(cookedMeal.toString() + " is cooked.");
+        Logger.logToConsole(cookedMeal.toString() + " for " + order.getClientName() + " is cooked.");
         incMealNum();
     }
 

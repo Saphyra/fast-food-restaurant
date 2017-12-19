@@ -1,9 +1,15 @@
 package restaurant.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import restaurant.Entrance;
+
 public class Logger implements Runnable {
-    private static final int QUEUE_SIZE_LOG_TIMER = 15000;
+    public static final int QUEUE_SIZE_LOG_TIMER = 15000;
+
+    private static List<LogSize> queueSizeList = new ArrayList<>();
 
     private enum Mode {
         ERR, OUT
@@ -41,12 +47,17 @@ public class Logger implements Runnable {
 
     private void printQueueSize() throws InterruptedException {
         long currentTime = System.currentTimeMillis();
-        if (currentTime > lastCheckTime + QUEUE_SIZE_LOG_TIMER) {
-            lastCheckTime = currentTime;
-            if (queue.size() > 10) {
-                LogMessage message = new LogMessage(Mode.ERR, "Current log queue size: " + queue.size());
+        long timeDiff = currentTime - lastCheckTime;
+        if (timeDiff > QUEUE_SIZE_LOG_TIMER) {
+            int queueSize = queue.size();
+            if (queueSize > 5) {
+                long runTime = currentTime - Entrance.START_TIME;
+                LogSize logSize = new LogSize(runTime, queueSize);
+                queueSizeList.add(logSize);
+                LogMessage message = new LogMessage(Mode.ERR, logSize.toString());
                 printLog(message);
             }
+            lastCheckTime = currentTime;
         }
     }
 
@@ -88,6 +99,10 @@ public class Logger implements Runnable {
 
     public static boolean isQueueEmpty() {
         return queue.size() == 0;
+    }
+
+    public static List<LogSize> getQueueSizeList() {
+        return queueSizeList;
     }
 
 }

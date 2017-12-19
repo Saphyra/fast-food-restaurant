@@ -9,7 +9,26 @@ import restaurant.service.Chef;
 import restaurant.service.Table;
 
 public class Logout {
+
     public static void exit() {
+        logLogQueueSize();
+        logPayOrder();
+        printStatistics();
+
+        System.exit(0);
+    }
+
+    private static void logLogQueueSize() {
+        System.out.println("\nLogSize:");
+
+        List<LogSize> logQueueSizeList = Logger.getQueueSizeList();
+        for (int index = 0; index < logQueueSizeList.size(); index++) {
+            LogSize logSize = logQueueSizeList.get(index);
+            logSize.print();
+        }
+    }
+
+    private static void printStatistics() {
         double runTime = (Cassa.getEND_TIME() - Entrance.START_TIME) / 1000;
         double clientGroupNum = ClientGroup.getClientGroupCount();
         double clientNum = ClientGroup.getClientCount();
@@ -18,12 +37,10 @@ public class Logout {
         double logMessageCount = Logger.getLogMessageCount();
 
         writeLog(runTime, clientGroupNum, clientNum, mealNum, averageClientPerGroup, logMessageCount);
-        logPayOrder();
-
-        System.exit(0);
     }
 
     private static void writeLog(double runTime, double clientGroupNum, double clientNum, int mealNum, double averageClientPerGroup, double logMessageCount) {
+        System.out.println();
         System.out.println("Runtime: " + runTime + " seconds.");
         System.out.println(clientNum + " clients in " + clientGroupNum + " groups");
         System.out.println("Average " + averageClientPerGroup + " client/group");

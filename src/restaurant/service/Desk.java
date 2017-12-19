@@ -70,7 +70,6 @@ public class Desk implements Runnable {
         for (String clientName : clientNames) {
             Client client = members.get(clientName);
             requestMeal(client);
-            Logger.logToConsole(client + "'s order is taken.");
         }
     }
 
@@ -82,6 +81,7 @@ public class Desk implements Runnable {
             mealOrder.setDeskName(name);
             Thread.sleep(sleepTime);
 
+            Logger.logToConsole(client + "'s order is taken.");
             mealQueue.put(mealOrder);
         }
     }

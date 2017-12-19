@@ -1,6 +1,5 @@
 package restaurant.meals;
 
-//TODO Desk és kliens azonosítóval címzett Meal wraper 
 public class MealPackage {
     private final String deskName;
     private final String clientName;
