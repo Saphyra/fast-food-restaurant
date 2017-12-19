@@ -5,38 +5,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import restaurant.util.FoodComparator;
-import restaurant.util.PropLoader;
-import restaurant.util.Random;
 
-public class Meal implements Cookable, Eatable {
-    private static final String MAX_MEAL_COUNT = "client.maxmealcount";
-    private static final String MIN_MEAL_COUNT = "client.minmealcount";
+public class Meal implements Eatable {
     private final Food<MainCourse> mainCourse;
     private final List<Food<Extra>> extras;
 
-    private Meal(Food<MainCourse> mainCourse, List<Food<Extra>> extras) {
+    public Meal(Food<MainCourse> mainCourse, List<Food<Extra>> extras) {
         this.mainCourse = mainCourse;
         this.extras = extras;
-    }
-
-    public static List<Meal> createRandomMealList() {
-        int minMealCount = PropLoader.getIntegerProperty(MIN_MEAL_COUNT);
-        int maxMealCount = PropLoader.getIntegerProperty(MAX_MEAL_COUNT);
-        int mealCount = Random.randInt(minMealCount, maxMealCount);
-
-        List<Meal> mealList = new ArrayList<>(mealCount);
-        for (int x = 0; x < mealCount; x++) {
-            mealList.add(createRandomMeal());
-        }
-
-        return mealList;
-    }
-
-    private static Meal createRandomMeal() {
-        Food<MainCourse> mainCourse = Food.createRandomMainCourse();
-        List<Food<Extra>> extras = Food.createRandomExtraList();
-
-        return new Meal(mainCourse, extras);
     }
 
     @Override
@@ -81,14 +57,6 @@ public class Meal implements Cookable, Eatable {
     }
 
     @Override
-    public void cook() {
-        mainCourse.cook();
-        for (Cookable extra : extras) {
-            extra.cook();
-        }
-    }
-
-    @Override
     public boolean isEaten() {
         boolean result = true;
         if (!mainCourse.isEaten()) {
@@ -103,28 +71,8 @@ public class Meal implements Cookable, Eatable {
     }
 
     @Override
-    public boolean isCooked() {
-        boolean result = true;
-        if (!mainCourse.isCooked()) {
-            result = false;
-        }
-        for (Cookable extra : extras) {
-            if (!extra.isCooked()) {
-                result = false;
-            }
-        }
-
-        return result;
-    }
-
-    @Override
     public void setEaten(boolean eaten) {
         throw new UnsupportedOperationException("Meal cannot set itself eaten.");
-    }
-
-    @Override
-    public void setCooked(boolean cooked) {
-        throw new UnsupportedOperationException("Meal cannot set itself cooked.");
     }
 
     @Override

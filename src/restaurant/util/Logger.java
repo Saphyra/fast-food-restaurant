@@ -3,6 +3,8 @@ package restaurant.util;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Logger implements Runnable {
+    private static final int QUEUE_SIZE_LOG_TIMER = 15000;
+
     private enum Mode {
         ERR, OUT
     }
@@ -39,7 +41,7 @@ public class Logger implements Runnable {
 
     private void printQueueSize() throws InterruptedException {
         long currentTime = System.currentTimeMillis();
-        if (currentTime > lastCheckTime + 10000) {
+        if (currentTime > lastCheckTime + QUEUE_SIZE_LOG_TIMER) {
             lastCheckTime = currentTime;
             if (queue.size() > 10) {
                 LogMessage message = new LogMessage(Mode.ERR, "Current log queue size: " + queue.size());

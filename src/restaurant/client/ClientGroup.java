@@ -1,7 +1,9 @@
 package restaurant.client;
 
-import java.util.List;
-import java.util.Vector;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
 import restaurant.service.Table;
@@ -16,14 +18,14 @@ public class ClientGroup implements Runnable {
     private static int clientCount = 0;
     private static int clientGroupCount = 0;
 
-    private final List<Client> groupMembers = new Vector<>();
+    private final Map<String, Client> groupMembers;
     private final String id;
     private final int clientNum;
     private Table table;
     private BlockingQueue<ClientGroup> cassaQueue;
 
-    private ClientGroup(List<Client> groupMembers, String id, BlockingQueue<ClientGroup> cassaQueue) {
-        this.groupMembers.addAll(groupMembers);
+    private ClientGroup(Map<String, Client> groupMembers, String id, BlockingQueue<ClientGroup> cassaQueue) {
+        this.groupMembers = Collections.synchronizedMap(groupMembers);
         this.id = id;
         clientNum = groupMembers.size();
         this.cassaQueue = cassaQueue;
@@ -31,23 +33,23 @@ public class ClientGroup implements Runnable {
 
     public static ClientGroup clientGroupFactory(BlockingQueue<ClientGroup> cassaQueue) {
         String groupid = "ClientGroup" + ++clientGroupCount;
-        List<Client> groupMembers = createClients(groupid);
+        Map<String, Client> groupMembers = createClients(groupid);
 
         ClientGroup group = new ClientGroup(groupMembers, groupid, cassaQueue);
         Logger.logToErr(group.toString() + " group created");
         return group;
     }
 
-    private static List<Client> createClients(String groupid) {
+    private static Map<String, Client> createClients(String groupid) {
         int minClientGroupSize = PropLoader.getIntegerProperty(MIN_CLIENT_GROUP_SIZE);
         int maxClientGroupSize = PropLoader.getIntegerProperty(MAX_CLIENT_GROUP_SIZE);
 
         int clientNum = Random.randInt(minClientGroupSize, maxClientGroupSize);
-        List<Client> groupMembers = new Vector<>(clientNum);
+        Map<String, Client> groupMembers = Collections.synchronizedMap(new HashMap<>());
 
         for (int x = 0; x < clientNum; x++) {
             Client client = createRandomClient(clientNum, groupid);
-            groupMembers.add(client);
+            groupMembers.put(client.getName(), client);
         }
 
         return groupMembers;
@@ -74,7 +76,9 @@ public class ClientGroup implements Runnable {
     }
 
     private void startEating() {
-        for (Client client : groupMembers) {
+        Set<String> clientNames = groupMembers.keySet();
+        for (String clientName : clientNames) {
+            Client client = groupMembers.get(clientName);
             Thread clientThread = new Thread(client, client.toString());
             clientThread.start();
         }
@@ -88,9 +92,13 @@ public class ClientGroup implements Runnable {
 
     private boolean areClientsReadyWithEating() {
         boolean allAte = true;
-        for (Client client : groupMembers) {
-            if (!client.isReadyWithFood()) {
-                allAte = false;
+        Set<String> clientNames = groupMembers.keySet();
+        for (String clientName : clientNames) {
+            Client client = groupMembers.get(clientName);
+            {
+                if (!client.isReadyWithFood()) {
+                    allAte = false;
+                }
             }
         }
         return allAte;
@@ -101,7 +109,7 @@ public class ClientGroup implements Runnable {
         return id + " [" + clientNum + "]";
     }
 
-    public List<Client> getGroupMembers() {
+    public Map<String, Client> getGroupMembers() {
         return groupMembers;
     }
 

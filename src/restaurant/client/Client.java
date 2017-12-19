@@ -1,8 +1,11 @@
 package restaurant.client;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import restaurant.meals.Meal;
+import restaurant.meals.MealOrder;
 import restaurant.util.Logger;
 import restaurant.util.PropLoader;
 import restaurant.util.Random;
@@ -13,14 +16,15 @@ public class Client implements Runnable {
 
     private final String name;
     private final String groupName;
-    private final List<Meal> mealList;
+    private final List<MealOrder> mealOrderList;
+    private List<Meal> mealList;
 
     private double moral;
     private volatile boolean readyWithFood = false;
 
     public Client(int id, String groupName) {
         name = "Client" + id;
-        mealList = Meal.createRandomMealList();
+        mealOrderList = MealOrder.createRandomMealOrderList(name);
         this.groupName = groupName;
 
         double minMoral = PropLoader.getDoubleProperty(MIN_MORAL);
@@ -53,8 +57,22 @@ public class Client implements Runnable {
         return moral;
     }
 
+    public List<MealOrder> getMealOrderList() {
+        return mealOrderList;
+    }
+
     public List<Meal> getMealList() {
         return mealList;
+    }
+
+    public void addMeal(Meal meal) {
+        if (mealList == null) {
+            mealList = Collections.synchronizedList(new ArrayList<Meal>());
+        }
+
+        mealList.add(meal);
+        Logger.logToConsole(toString() + " has got one some of his meals. (" + mealList.size() + " / " + mealOrderList.size() + ")");
+
     }
 
     public boolean isReadyWithFood() {
@@ -63,6 +81,30 @@ public class Client implements Runnable {
 
     private void setReadyWidthFood(boolean value) {
         readyWithFood = value;
+    }
+
+    public boolean isGotHisFood() {
+        boolean result = true;
+
+        if (mealList == null) {
+            result = false;
+        } else if (mealList.size() != mealOrderList.size()) {
+            result = false;
+        }
+
+        return result;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getOrderedMealCount() {
+        return mealOrderList.size();
+    }
+
+    public int getCookedMealsCount() {
+        return mealList.size();
     }
 
     @Override
